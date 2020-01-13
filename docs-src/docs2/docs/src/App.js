@@ -7,7 +7,9 @@ import "./css/site.scss"
 // Any routes that start with "dynamic" will be treated as non-static routes
 addPrefetchExcludes(["dynamic"])
 
-function App() {
+function App(props) {
+	console.log(props);
+
 	return (
 		<Root>
 			<React.Suspense fallback={<em>Loading...</em>}>

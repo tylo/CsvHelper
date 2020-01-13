@@ -1,5 +1,6 @@
-import React from "react";
-import { withSiteData, withRouteData, useSiteData } from "react-static";
+import React, { Component, createRef } from "react";
+import { withRouter } from "react-router";
+import { withSiteData, withRouteData } from "react-static";
 import marked from "marked";
 import highlight from "highlight.js";
 import "highlight.js/styles/vs.css";
@@ -102,6 +103,10 @@ function initializeMarked(basePath) {
 }
 
 const Content = ({ className, data, basePath }) => {
+	if (!data) {
+		return <></>;
+	}
+
 	initializeMarked(basePath);
 
 	const markdown = marked(data);
@@ -111,4 +116,64 @@ const Content = ({ className, data, basePath }) => {
 	)
 }
 
-export default withSiteData(withRouteData(Content));
+class Content2 extends Component {
+
+	constructor(props) {
+		super(props);
+
+		this.divRef = createRef();
+
+		initializeMarked(this.props.basePath);
+	}
+
+	componentDidMount() {
+		this.registerAnchorEventListeners();
+	}
+
+	componentDidUpdate(prevProps) {
+		if (prevProps.data !== this.props.data) {
+			this.removeAnchorEventListeners();
+			this.registerAnchorEventListeners();
+		}
+	}
+
+	componentWillUnmount() {
+		this.removeAnchorEventListeners();
+	}
+
+	registerAnchorEventListeners() {
+		this.anchors = this.divRef.current.getElementsByTagName("a");
+
+		for (const anchor of this.anchors) {
+			anchor.addEventListener("click", this.handleAnchorClick);
+		}
+	}
+
+	removeAnchorEventListeners() {
+		for (const anchor of this.anchors) {
+			anchor.removeEventListener("click", this.handleAnchorClick);
+		}
+	}
+
+	handleAnchorClick = (e) => {
+		const { history } = this.props;
+		const href = e.currentTarget.getAttribute("href");
+
+		if (href[0] === "/") {
+			e.preventDefault();
+			history.push(href);
+		}
+	}
+
+	render() {
+		const { className, data } = this.props;
+
+		const markdown = marked(data);
+
+		return (
+			<div ref={this.divRef} className={className} dangerouslySetInnerHTML={{ __html: markdown }}></div>
+		);
+	}
+}
+
+export default withSiteData(withRouteData(withRouter(Content2)))

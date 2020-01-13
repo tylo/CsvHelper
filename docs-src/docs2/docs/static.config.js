@@ -73,14 +73,8 @@ export default {
 	),
 	getRoutes: ({ siteData }) => {
 		const routes = [
-			{
-				path: "foo.bar",
-				template: "src/pages/about"
-			},
 			...createRoutesFromToc(siteData.isDev)
 		];
-
-		console.log("routes", routes);
 
 		return routes;
 	},
