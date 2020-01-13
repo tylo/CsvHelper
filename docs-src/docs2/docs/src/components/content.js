@@ -102,21 +102,7 @@ function initializeMarked(basePath) {
 	});
 }
 
-const Content = ({ className, data, basePath }) => {
-	if (!data) {
-		return <></>;
-	}
-
-	initializeMarked(basePath);
-
-	const markdown = marked(data);
-
-	return (
-		<div className={className} dangerouslySetInnerHTML={{ __html: markdown }}></div>
-	)
-}
-
-class Content2 extends Component {
+class Content extends Component {
 
 	constructor(props) {
 		super(props);
@@ -176,4 +162,4 @@ class Content2 extends Component {
 	}
 }
 
-export default withSiteData(withRouteData(withRouter(Content2)))
+export default withSiteData(withRouteData(withRouter(Content)))
