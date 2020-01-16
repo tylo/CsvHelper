@@ -29,8 +29,6 @@ function initializeMarked(basePath) {
 		return;
 	}
 
-	console.log("initializing marked");
-
 	isMarkedInitialized = true;
 
 	highlight.configure({

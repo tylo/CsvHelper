@@ -8,8 +8,6 @@ import "./css/site.scss"
 addPrefetchExcludes(["dynamic"])
 
 function App(props) {
-	console.log(props);
-
 	return (
 		<Root>
 			<React.Suspense fallback={<em>Loading...</em>}>
