@@ -14,7 +14,7 @@ function createData(name) {
 	});
 }
 
-function createRoutesFromToc(isDev) {
+function createRoutesFromToc() {
 	const routes = [];
 	Object.entries(toc).forEach(([key, value]) => {
 		createRoutesFromTocItem(value, routes);
@@ -44,6 +44,9 @@ export default {
 	siteRoot: "https://joshclose.github.io",
 	stagingBasePath: "CsvHelper",
 	basePath: "CsvHelper",
+	paths: {
+		dist: "../../../docs"
+	},
 	Document: ({ Html, Head, Body, children, state: { siteData, renderMeta } }) => (
 		<Html lang="en-US">
 			<Head>
@@ -71,9 +74,9 @@ export default {
 			<Body>{children}</Body>
 		</Html>
 	),
-	getRoutes: ({ siteData }) => {
+	getRoutes: () => {
 		const routes = [
-			...createRoutesFromToc(siteData.isDev)
+			...createRoutesFromToc()
 		];
 
 		return routes;

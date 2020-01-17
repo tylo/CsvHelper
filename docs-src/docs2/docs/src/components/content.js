@@ -111,13 +111,18 @@ class Content extends Component {
 	}
 
 	componentDidMount() {
-		this.registerAnchorEventListeners();
+		this.intersectionObserver = new IntersectionObserver(this.handleDivObserved);
+		this.intersectionObserver.observe(this.divRef.current);
 	}
 
 	componentDidUpdate(prevProps) {
 		if (prevProps.data !== this.props.data) {
 			this.removeAnchorEventListeners();
 			this.registerAnchorEventListeners();
+		}
+
+		if (prevProps.location !== this.props.location) {
+			this.scroll();
 		}
 	}
 
@@ -137,6 +142,21 @@ class Content extends Component {
 		for (const anchor of this.anchors) {
 			anchor.removeEventListener("click", this.handleAnchorClick);
 		}
+	}
+
+	scroll() {
+		const hash = this.props.location.hash.slice(1);
+		if (hash) {
+			document.getElementById(hash).scrollIntoView();
+		}
+		else {
+			window.scrollTo(0, 0);
+		}
+	}
+
+	handleDivObserved = () => {
+		this.registerAnchorEventListeners();
+		this.scroll();
 	}
 
 	handleAnchorClick = (e) => {

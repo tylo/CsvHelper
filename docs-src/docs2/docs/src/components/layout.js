@@ -8,7 +8,7 @@ class Layout extends Component {
 		return (
 			<>
 				<Header />
-				<div ref={this.bodyRef} className="body">
+				<div className="body">
 					{this.props.children}
 				</div>
 				<Footer />
