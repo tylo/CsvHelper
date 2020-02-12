@@ -2,11 +2,15 @@
 // This file is a part of CsvHelper and is dual licensed under MS-PL and Apache 2.0.
 // See LICENSE.txt for details or visit http://www.opensource.org/licenses/ms-pl.html for MS-PL and http://opensource.org/licenses/Apache-2.0 for Apache 2.0.
 // https://github.com/JoshClose/CsvHelper
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
 using CsvHelper.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CsvHelper.Performance
@@ -15,15 +19,23 @@ namespace CsvHelper.Performance
 	{
 		static void Main(string[] args)
 		{
-			//WriteField(50, 1000000);
-			//WriteRecords(1000000);
+			//WriteField(50, 1_000_000);
+			//WriteRecords(1_000_000);
 
-			//Parse();
-			//ReadGetField();
-			ReadGetRecords();
-			//ReadGetRecordsAsync().Wait();
+			for (var i = 0; i < 5; i++)
+			{
+				Parse();
+				LumenworksParse();
+				SoftCircuitsParse();
 
-			Console.ReadKey();
+				//ReadGetField();
+				//ReadGetRecords();
+				//ReadGetRecordsAsync().Wait();
+
+				Console.WriteLine();
+			}
+
+			//BenchmarkRunner.Run<Benchmarks>();
 		}
 
 		static string GetFilePath()
@@ -33,7 +45,7 @@ namespace CsvHelper.Performance
 			return filePath;
 		}
 
-		static void WriteField(int columns = 50, int rows = 2000000)
+		static void WriteField(int columns = 50, int rows = 2_000_000)
 		{
 			Console.WriteLine("Writing using WriteField");
 			var stopwatch = new Stopwatch();
@@ -41,7 +53,7 @@ namespace CsvHelper.Performance
 
 			using (var stream = File.Create(GetFilePath()))
 			using (var writer = new StreamWriter(stream))
-			using (var csv = new CsvWriter(writer))
+			using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
 			{
 				for (var column = 1; column <= columns; column++)
 				{
@@ -63,7 +75,7 @@ namespace CsvHelper.Performance
 			Console.WriteLine(stopwatch.Elapsed);
 		}
 
-		static void WriteRecords(int rows = 2000000)
+		static void WriteRecords(int rows = 2_000_000)
 		{
 			Console.WriteLine("Writing using WriteRecords");
 			var stopwatch = new Stopwatch();
@@ -71,7 +83,7 @@ namespace CsvHelper.Performance
 
 			using (var stream = File.Create(GetFilePath()))
 			using (var writer = new StreamWriter(stream))
-			using (var csv = new CsvWriter(writer))
+			using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
 			{
 				var records = new List<Columns50>();
 				for (var i = 0; i < rows; i++)
@@ -141,13 +153,13 @@ namespace CsvHelper.Performance
 
 		static void Parse()
 		{
-			Console.WriteLine("Parsing");
+			Console.WriteLine("CsvHelper parsing");
 			var stopwatch = new Stopwatch();
 			stopwatch.Start();
 
 			using (var stream = File.OpenRead(GetFilePath()))
 			using (var reader = new StreamReader(stream))
-			using (var parser = new CsvParser(reader))
+			using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
 			{
 				string[] row;
 				while ((row = parser.Read()) != null)
@@ -167,7 +179,7 @@ namespace CsvHelper.Performance
 
 			using (var stream = File.OpenRead(GetFilePath()))
 			using (var reader = new StreamReader(stream))
-			using (var csv = new CsvReader(reader))
+			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
 			{
 				// Read header.
 				csv.Read();
@@ -193,7 +205,7 @@ namespace CsvHelper.Performance
 
 			using (var stream = File.OpenRead(GetFilePath()))
 			using (var reader = new StreamReader(stream))
-			using (var csv = new CsvReader(reader))
+			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
 			{
 				var records = csv.GetRecords<Columns50>();
 				foreach (var record in records)
@@ -213,11 +225,56 @@ namespace CsvHelper.Performance
 
 			using (var stream = File.OpenRead(GetFilePath()))
 			using (var reader = new StreamReader(stream))
-			using (var csv = new CsvReader(reader))
+			using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
 			{
 				while (await csv.ReadAsync())
 				{
 					var record = csv.GetRecord<Columns50>();
+				}
+			}
+
+			stopwatch.Stop();
+			Console.WriteLine(stopwatch.Elapsed);
+		}
+
+		static void LumenworksParse()
+		{
+			Console.WriteLine("Lumenworks parsing");
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
+
+			using (var stream = File.OpenRead(GetFilePath()))
+			using (var reader = new StreamReader(stream))
+			using (var csv = new LumenWorks.Framework.IO.Csv.CsvReader(reader))
+			{
+				var fieldCount = csv.FieldCount;
+				var headers = csv.GetFieldHeaders();
+				while (csv.ReadNextRecord())
+				{
+					var row = new string[fieldCount];
+					for (var i = 0; i < fieldCount; i++)
+					{
+						row[i] = csv[i];
+					}
+				}
+			}
+
+			stopwatch.Stop();
+			Console.WriteLine(stopwatch.Elapsed);
+		}
+
+		static void SoftCircuitsParse()
+		{
+			Console.WriteLine("SoftCircuits parsing");
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
+
+			using (var stream = File.OpenRead(GetFilePath()))
+			using (var csv = new SoftCircuits.CsvParser.CsvReader(stream))
+			{
+				string[] row = null;
+				while (csv.ReadRow(ref row))
+				{
 				}
 			}
 
@@ -299,6 +356,51 @@ namespace CsvHelper.Performance
 			public int Column48 { get; set; }
 			public int Column49 { get; set; }
 			public int Column50 { get; set; }
+		}
+	}
+
+	public class Benchmarks
+	{
+		private char[] buffer;
+
+		public Benchmarks()
+		{
+			buffer = "this is the buffer string".ToCharArray();
+		}
+
+		[Benchmark]
+		public void A()
+		{
+			var sb = new StringBuilder();
+			var position = 0;
+			while (true)
+			{
+				sb.Append(buffer[position]);
+				position++;
+
+				if (position >= buffer.Length)
+				{
+					break;
+				}
+			}
+			var s = sb.ToString();
+		}
+
+		[Benchmark]
+		public void B()
+		{
+			var position = 0;
+			while (true)
+			{
+				position++;
+
+				if (position >= buffer.Length)
+				{
+					break;
+				}
+			}
+
+			var s = new string(buffer, 0, buffer.Length);
 		}
 	}
 }

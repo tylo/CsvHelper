@@ -1,12 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net45</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CsvHelper\CsvHelper.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="BenchmarkDotNet" Version="0.12.0" />
+	  <PackageReference Include="LumenWorksCsvReader" Version="4.0.0" />
+	  <PackageReference Include="SoftCircuits.CsvParser" Version="2.0.9" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\CsvHelper\CsvHelper.csproj" />
+	</ItemGroup>
 
 </Project>
