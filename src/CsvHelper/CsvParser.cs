@@ -164,7 +164,7 @@ namespace CsvHelper
 				if (fieldReader.IsBufferEmpty && !fieldReader.FillBuffer())
 				{
 					// End of file.
-					if (context.RecordBuilder.Length > 0)
+					if (context.RecordBuilder.Count > 0)
 					{
 						// There was no line break at the end of the file.
 						// We need to return the last record first.
@@ -177,7 +177,7 @@ namespace CsvHelper
 
 				c = fieldReader.GetChar();
 
-				if (context.RecordBuilder.Length == 0 && ((c == context.ParserConfiguration.Comment && context.ParserConfiguration.AllowComments) || c == '\r' || c == '\n'))
+				if (context.RecordBuilder.Count == 0 && ((c == context.ParserConfiguration.Comment && context.ParserConfiguration.AllowComments) || c == '\r' || c == '\n'))
 				{
 					ReadBlankLine();
 					if (!context.ParserConfiguration.IgnoreBlankLines)
@@ -229,7 +229,7 @@ namespace CsvHelper
 				if (fieldReader.IsBufferEmpty && !await fieldReader.FillBufferAsync().ConfigureAwait(false))
 				{
 					// End of file.
-					if (context.RecordBuilder.Length > 0)
+					if (context.RecordBuilder.Count > 0)
 					{
 						// There was no line break at the end of the file.
 						// We need to return the last record first.
@@ -242,7 +242,7 @@ namespace CsvHelper
 
 				c = fieldReader.GetChar();
 
-				if (context.RecordBuilder.Length == 0 && ((c == context.ParserConfiguration.Comment && context.ParserConfiguration.AllowComments) || c == '\r' || c == '\n'))
+				if (context.RecordBuilder.Count == 0 && ((c == context.ParserConfiguration.Comment && context.ParserConfiguration.AllowComments) || c == '\r' || c == '\n'))
 				{
 					await ReadBlankLineAsync().ConfigureAwait(false);
 					if (!context.ParserConfiguration.IgnoreBlankLines)

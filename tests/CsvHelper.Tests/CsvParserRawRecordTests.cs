@@ -14,124 +14,133 @@ namespace CsvHelper.Tests
 		[TestMethod]
 		public void RawRecordCrLfTest()
 		{
-			using( var stream = new MemoryStream() )
-			using( var writer = new StreamWriter( stream ) )
-			using( var reader = new StreamReader( stream ) )
-			using( var parser = new CsvParser(reader, CultureInfo.InvariantCulture) )
+			using (var stream = new MemoryStream())
+			using (var writer = new StreamWriter(stream))
+			using (var reader = new StreamReader(stream))
+			using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
 			{
-				writer.Write( "1,2\r\n" );
-				writer.Write( "3,4\r\n" );
+				parser.Configuration.EnableRawRecord = true;
+
+				writer.Write("1,2\r\n");
+				writer.Write("3,4\r\n");
 				writer.Flush();
 				stream.Position = 0;
 
 				parser.Read();
-				Assert.AreEqual( "1,2\r\n", parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual("1,2\r\n", parser.FieldReader.Context.RawRecord);
 
 				parser.Read();
-				Assert.AreEqual( "3,4\r\n", parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual("3,4\r\n", parser.FieldReader.Context.RawRecord);
 
 				parser.Read();
-				Assert.AreEqual( string.Empty, parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual(string.Empty, parser.FieldReader.Context.RawRecord);
 			}
 		}
 
 		[TestMethod]
 		public void RawRecordCrTest()
 		{
-			using( var stream = new MemoryStream() )
-			using( var writer = new StreamWriter( stream ) )
-			using( var reader = new StreamReader( stream ) )
-			using( var parser = new CsvParser(reader, CultureInfo.InvariantCulture) )
+			using (var stream = new MemoryStream())
+			using (var writer = new StreamWriter(stream))
+			using (var reader = new StreamReader(stream))
+			using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
 			{
-				writer.Write( "1,2\r" );
-				writer.Write( "3,4\r" );
+				parser.Configuration.EnableRawRecord = true;
+
+				writer.Write("1,2\r");
+				writer.Write("3,4\r");
 				writer.Flush();
 				stream.Position = 0;
 
 				parser.Read();
-				Assert.AreEqual( "1,2\r", parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual("1,2\r", parser.FieldReader.Context.RawRecord);
 
 				parser.Read();
-				Assert.AreEqual( "3,4\r", parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual("3,4\r", parser.FieldReader.Context.RawRecord);
 
 				parser.Read();
-				Assert.AreEqual( string.Empty, parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual(string.Empty, parser.FieldReader.Context.RawRecord);
 			}
 		}
 
 		[TestMethod]
 		public void RawRecordLfTest()
 		{
-			using( var stream = new MemoryStream() )
-			using( var writer = new StreamWriter( stream ) )
-			using( var reader = new StreamReader( stream ) )
-			using( var parser = new CsvParser(reader, CultureInfo.InvariantCulture) )
+			using (var stream = new MemoryStream())
+			using (var writer = new StreamWriter(stream))
+			using (var reader = new StreamReader(stream))
+			using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
 			{
-				writer.Write( "1,2\n" );
-				writer.Write( "3,4\n" );
+				parser.Configuration.EnableRawRecord = true;
+
+				writer.Write("1,2\n");
+				writer.Write("3,4\n");
 				writer.Flush();
 				stream.Position = 0;
 
 				parser.Read();
-				Assert.AreEqual( "1,2\n", parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual("1,2\n", parser.FieldReader.Context.RawRecord);
 
 				parser.Read();
-				Assert.AreEqual( "3,4\n", parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual("3,4\n", parser.FieldReader.Context.RawRecord);
 
 				parser.Read();
-				Assert.AreEqual( string.Empty, parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual(string.Empty, parser.FieldReader.Context.RawRecord);
 			}
 		}
 
 		[TestMethod]
 		public void RawRecordCr2DelimiterTest()
 		{
-			using( var stream = new MemoryStream() )
-			using( var writer = new StreamWriter( stream ) )
-			using( var reader = new StreamReader( stream ) )
-			using( var parser = new CsvParser(reader, CultureInfo.InvariantCulture) )
+			using (var stream = new MemoryStream())
+			using (var writer = new StreamWriter(stream))
+			using (var reader = new StreamReader(stream))
+			using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
 			{
-				writer.Write( "1;;2\r" );
-				writer.Write( "3;;4\r" );
+				writer.Write("1;;2\r");
+				writer.Write("3;;4\r");
 				writer.Flush();
 				stream.Position = 0;
 
 				parser.Configuration.Delimiter = ";;";
+				parser.Configuration.EnableRawRecord = true;
 
 				parser.Read();
-				Assert.AreEqual( "1;;2\r", parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual("1;;2\r", parser.FieldReader.Context.RawRecord);
 
 				parser.Read();
-				Assert.AreEqual( "3;;4\r", parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual("3;;4\r", parser.FieldReader.Context.RawRecord);
 
 				parser.Read();
-				Assert.AreEqual( string.Empty, parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual(string.Empty, parser.FieldReader.Context.RawRecord);
 			}
 		}
 
 		[TestMethod]
 		public void TinyBufferTest()
 		{
-			using( var stream = new MemoryStream() )
-			using( var writer = new StreamWriter( stream ) )
-			using( var reader = new StreamReader( stream ) )
-			using( var parser = new CsvParser(reader, CultureInfo.InvariantCulture) )
+			using (var stream = new MemoryStream())
+			using (var writer = new StreamWriter(stream))
+			using (var reader = new StreamReader(stream))
+			using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
 			{
-				writer.Write( "1,2\r\n" );
-				writer.Write( "3,4\r\n" );
+				parser.Configuration.EnableRawRecord = true;
+
+				writer.Write("1,2\r\n");
+				writer.Write("3,4\r\n");
 				writer.Flush();
 				stream.Position = 0;
 
 				parser.Configuration.BufferSize = 1;
 
 				parser.Read();
-				Assert.AreEqual( "1,2\r\n", parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual("1,2\r\n", parser.FieldReader.Context.RawRecord);
 
 				parser.Read();
-				Assert.AreEqual( "3,4\r\n", parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual("3,4\r\n", parser.FieldReader.Context.RawRecord);
 
 				parser.Read();
-				Assert.AreEqual( string.Empty, parser.FieldReader.Context.RawRecord );
+				Assert.AreEqual(string.Empty, parser.FieldReader.Context.RawRecord);
 			}
 		}
 	}

@@ -343,6 +343,12 @@ namespace CsvHelper.Configuration
 		public virtual bool IgnoreBlankLines { get; set; } = true;
 
 		/// <summary>
+		/// Gets or sets a value indicating whether the raw record should be recorded. True to
+		/// record the raw record, otherwise false. Enabling this will slow down parsing.
+		/// </summary>
+		public virtual bool EnableRawRecord { get; set; }
+
+		/// <summary>
 		/// Gets or sets a callback that will return the prefix for a reference header.
 		/// Arguments: memberType, memberName
 		/// </summary>

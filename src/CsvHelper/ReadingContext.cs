@@ -32,7 +32,7 @@ namespace CsvHelper
 		/// <summary>
 		/// Gets the record builder.
 		/// </summary>
-		public RecordBuilder RecordBuilder = new RecordBuilder();
+		public List<string> RecordBuilder = new List<string>();
 
 		/// <summary>
 		/// Gets the named indexes.

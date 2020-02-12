@@ -193,7 +193,11 @@ namespace CsvHelper
 				context.BytePosition += context.ParserConfiguration.Encoding.GetByteCount(context.Buffer, context.RawRecordStartPosition, context.BufferPosition - context.RawRecordStartPosition);
 			}
 
-			context.RawRecordBuilder.Append(new string(context.Buffer, context.RawRecordStartPosition, context.RawRecordEndPosition - context.RawRecordStartPosition));
+			if (context.ParserConfiguration.EnableRawRecord)
+			{
+				context.RawRecordBuilder.Append(new string(context.Buffer, context.RawRecordStartPosition, context.RawRecordEndPosition - context.RawRecordStartPosition));
+			}
+
 			context.RawRecordStartPosition = context.RawRecordEndPosition;
 
 			var length = context.FieldEndPosition - context.FieldStartPosition;

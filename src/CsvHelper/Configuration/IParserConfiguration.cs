@@ -95,5 +95,11 @@ namespace CsvHelper.Configuration
 		/// Gets or sets the field trimming options.
 		/// </summary>
 		TrimOptions TrimOptions { get; set; }
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the raw record should be recorded. True to
+		/// record the raw record, otherwise false. Enabling this will slow down parsing.
+		/// </summary>
+		bool EnableRawRecord { get; set; }
 	}
 }

@@ -1278,6 +1278,8 @@ namespace CsvHelper.Tests
 			using (var reader = new StringReader(val))
 			using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
 			{
+				parser.Configuration.EnableRawRecord = true;
+
 				parser.Read();
 				Assert.AreEqual(row1, parser.FieldReader.Context.RawRecord);
 
