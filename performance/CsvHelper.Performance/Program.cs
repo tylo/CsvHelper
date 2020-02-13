@@ -22,8 +22,9 @@ namespace CsvHelper.Performance
 			//WriteField(50, 1_000_000);
 			//WriteRecords(1_000_000);
 
-			for (var i = 0; i < 5; i++)
+			for (var i = 0; i < 1; i++)
 			{
+				StackParse();
 				Parse();
 				LumenworksParse();
 				SoftCircuitsParse();
@@ -32,10 +33,10 @@ namespace CsvHelper.Performance
 				//ReadGetRecords();
 				//ReadGetRecordsAsync().Wait();
 
-				Console.WriteLine();
+				//Console.WriteLine();
 			}
 
-			//BenchmarkRunner.Run<Benchmarks>();
+			BenchmarkRunner.Run<Benchmarks>();
 		}
 
 		static string GetFilePath()
@@ -145,6 +146,26 @@ namespace CsvHelper.Performance
 				}
 
 				csv.WriteRecords(records);
+			}
+
+			stopwatch.Stop();
+			Console.WriteLine(stopwatch.Elapsed);
+		}
+
+		static void StackParse()
+		{
+			Console.WriteLine("CsvHelper stack parsing");
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
+
+			using (var stream = File.OpenRead(GetFilePath()))
+			using (var reader = new StreamReader(stream))
+			using (var parser = new CsvStackParser(reader))
+			{
+				ReadOnlySpan<string> row;
+				while ((row = parser.Read()) != null)
+				{
+				}
 			}
 
 			stopwatch.Stop();
@@ -361,46 +382,32 @@ namespace CsvHelper.Performance
 
 	public class Benchmarks
 	{
-		private char[] buffer;
+		private string s = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
 
 		public Benchmarks()
 		{
-			buffer = "this is the buffer string".ToCharArray();
 		}
 
 		[Benchmark]
 		public void A()
 		{
-			var sb = new StringBuilder();
-			var position = 0;
-			while (true)
+			var memory = new Memory<char>(s.ToCharArray());
+			var slice = memory.Span.Slice(0);
+			for (var i = 0; i < s.Length; i++)
 			{
-				sb.Append(buffer[position]);
-				position++;
-
-				if (position >= buffer.Length)
-				{
-					break;
-				}
+				var c = slice[i];
 			}
-			var s = sb.ToString();
 		}
 
 		[Benchmark]
 		public void B()
 		{
-			var position = 0;
-			while (true)
+			var memory = new Memory<char>(s.ToCharArray());
+			for (var i = 0; i < s.Length; i++)
 			{
-				position++;
-
-				if (position >= buffer.Length)
-				{
-					break;
-				}
+				var slice = memory.Span.Slice(0);
+				var c = slice[i];
 			}
-
-			var s = new string(buffer, 0, buffer.Length);
 		}
 	}
 }
