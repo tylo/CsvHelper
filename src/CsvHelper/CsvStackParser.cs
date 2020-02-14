@@ -1,7 +1,9 @@
 ﻿#if NETSTANDARD2_1
+using CsvHelper.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,21 +14,23 @@ namespace CsvHelper
 	public class CsvStackParser : IDisposable
 	{
 		private TextReader reader;
-		private int bufferSize = 1024;
-		private int heapBufferPosition;
-		private int heapRawRecordStartPosition;
-		private int heapRawRecordEndPosition;
-		private int stackBufferPosition;
-		private int stackFieldStartPosition;
-		private int stackFieldEndPosition;
-		private string delimiter = ",";
-		private char escape = '"';
+		private int bufferPosition;
+		private int fieldStartPosition;
+		private int fieldEndPosition;
+		private int rawRecordStartPosition;
+		private int rawRecordEndPosition;
 		private List<string> row = new List<string>();
 		private Memory<char> heapBuffer = new Memory<char>();
 		private int charsRead;
 		private int c = -1;
 		private List<string> rawRecord = new List<string>();
-		private string newLine = "";
+		private char escape = '"';
+		private string delimiter = ",";
+		private string newLine = string.Empty;
+		private bool leaveOpen;
+		private CsvConfiguration configuration;
+
+		public CsvConfiguration Configuration => configuration;
 
 		public int Row { get; protected set; }
 
@@ -34,24 +38,27 @@ namespace CsvHelper
 
 		public string RawRecord => BuildRawRecord();
 
-		public CsvStackParser(TextReader reader)
+		public CsvStackParser(TextReader reader, CultureInfo culture) : this(reader, culture, false) { }
+
+		public CsvStackParser(TextReader reader, CultureInfo culture, bool leaveOpen) : this(reader, new CsvConfiguration(culture)) { }
+
+		public CsvStackParser(TextReader reader, CsvConfiguration configuration) : this(reader, configuration, false) { }
+
+		public CsvStackParser(TextReader reader, CsvConfiguration configuration, bool leaveOpen)
 		{
 			this.reader = reader;
+			this.configuration = configuration;
+			this.leaveOpen = leaveOpen;
 		}
 
-		public virtual string[] Read()
+		public string[] Read()
 		{
 			Row++;
 			RawRow++;
 			row.Clear();
 			rawRecord.Clear();
-			stackBufferPosition = 0;
-			stackFieldStartPosition = 0;
-			stackFieldEndPosition = 0;
-			heapRawRecordStartPosition = heapBufferPosition;
-			heapRawRecordEndPosition = heapRawRecordStartPosition;
 
-			var stackBuffer = new Span<char>();
+			var stackBuffer = heapBuffer.Span.Slice(0);
 
 			while (true)
 			{
@@ -83,7 +90,7 @@ namespace CsvHelper
 			return row.ToArray();
 		}
 
-		protected virtual bool ReadField(ref Span<char> stackBuffer)
+		protected bool ReadField(ref Span<char> stackBuffer)
 		{
 			while (true)
 			{
@@ -106,12 +113,12 @@ namespace CsvHelper
 			}
 		}
 
-		protected virtual bool ReadQuotedField(ref Span<char> stackBuffer)
+		protected bool ReadQuotedField(ref Span<char> stackBuffer)
 		{
 			throw new NotImplementedException();
 		}
 
-		protected virtual bool ReadDelimiter(ref Span<char> stackBuffer)
+		protected bool ReadDelimiter(ref Span<char> stackBuffer)
 		{
 			Debug.Assert(c == delimiter[0], "Tried reading a delimiter when the first delimiter char didn't match the current char.");
 
@@ -128,15 +135,15 @@ namespace CsvHelper
 			}
 
 			// Adjust end position to account for delmiter.
-			stackFieldEndPosition -= delimiter.Length;
+			fieldEndPosition -= delimiter.Length;
 			AppendField(ref stackBuffer);
-			stackFieldStartPosition = stackBufferPosition;
-			stackFieldEndPosition = stackFieldStartPosition;
+			fieldStartPosition = bufferPosition;
+			fieldEndPosition = fieldStartPosition;
 
 			return true;
 		}
 
-		protected virtual bool ReadLineEnding(ref Span<char> stackBuffer)
+		protected bool ReadLineEnding(ref Span<char> stackBuffer)
 		{
 			Debug.Assert((newLine.Length > 0 && c != newLine[0]) || c != '\r' || c != '\n', "Tried reading a line ending when the first delimiter char didn't match the current char and wasn't \\r or \\n.");
 
@@ -159,104 +166,95 @@ namespace CsvHelper
 				}
 
 				// Adjust position to account for new line.
-				stackFieldEndPosition -= newLine.Length;
+				fieldEndPosition -= newLine.Length;
 			}
 			else if (c == '\r')
 			{
-				stackFieldEndPosition--;
+				fieldEndPosition--;
 
 				if (PeekChar(stackBuffer) == '\n')
 				{
 					c = GetChar(ref stackBuffer);
-					stackFieldEndPosition--;
+					fieldEndPosition--;
 				}
 			}
 			else // \n
 			{
 				// Adjust position to account for new line.
-				stackFieldEndPosition--;
+				fieldEndPosition--;
 			}
 
-			AppendField(ref stackBuffer);
-			stackFieldStartPosition = stackBufferPosition;
-			stackFieldEndPosition = stackFieldStartPosition;
+			//AppendField(ref stackBuffer);
+			fieldStartPosition = bufferPosition;
+			fieldEndPosition = fieldStartPosition;
 
-			var start = heapRawRecordStartPosition;
-			var length = heapRawRecordEndPosition - heapRawRecordStartPosition;
-			rawRecord.Add(new string(heapBuffer.Span.Slice(start, length)));
+			//var start = rawRecordStartPosition;
+			//var length = rawRecordEndPosition - rawRecordStartPosition;
+			//rawRecord.Add(new string(heapBuffer.Span.Slice(start, length)));
 
 			return true;
 		}
 
-		protected virtual void AppendField(ref Span<char> stackBuffer)
+		protected void AppendField(ref Span<char> stackBuffer)
 		{
-			var start = stackFieldStartPosition;
-			var length = stackFieldEndPosition - stackFieldStartPosition;
+			var start = fieldStartPosition;
+			var length = fieldEndPosition - fieldStartPosition;
 
 			row.Add(new string(stackBuffer.Slice(start, length)));
 		}
 
-		protected virtual int GetChar(ref Span<char> stackBuffer)
+		protected int GetChar(ref Span<char> stackBuffer)
 		{
 			if (!FillBuffer(ref stackBuffer))
 			{
 				return -1;
 			}
 
-			var c = stackBuffer[stackBufferPosition];
-			heapBufferPosition++;
-			heapRawRecordEndPosition++;
-			stackBufferPosition++;
-			stackFieldEndPosition++;
+			var c = stackBuffer[bufferPosition];
+			bufferPosition++;
+			fieldEndPosition++;
+			rawRecordEndPosition++;
 
 			return c;
 		}
 
-		protected virtual int PeekChar(Span<char> stackBuffer)
+		protected int PeekChar(Span<char> stackBuffer)
 		{
-			if (stackBufferPosition < charsRead)
+			if (bufferPosition < charsRead)
 			{
-				return stackBuffer[stackBufferPosition];
+				return stackBuffer[bufferPosition];
 			}
 
 			return reader.Peek();
 		}
 
-		protected virtual bool FillBuffer(ref Span<char> stackBuffer)
+		protected bool FillBuffer(ref Span<char> stackBuffer)
 		{
-			// Initialize the stack buffer.
-			if (stackBuffer.Length == 0)
-			{
-				stackBuffer = heapBuffer.Span.Slice(heapBufferPosition);
-			}
-
-			// 
-			if (heapBufferPosition < charsRead)
+			// The buffer doesn't need to be filled yet.
+			if (bufferPosition < charsRead)
 			{
 				return true;
 			}
 
 			// TODO: Only do this if a config flag is set to true.
-			if (heapRawRecordStartPosition < heapRawRecordEndPosition)
-			{
-				// Append the raw record.
-				rawRecord.Add(new string(heapBuffer.Span.Slice(heapRawRecordStartPosition, heapRawRecordEndPosition - heapRawRecordStartPosition)));
-				heapRawRecordStartPosition = heapBufferPosition;
-				heapRawRecordEndPosition = heapRawRecordStartPosition;
-			}
+			//if (rawRecordStartPosition < rawRecordEndPosition)
+			//{
+			//	// Append the raw record.
+			//	rawRecord.Add(new string(heapBuffer.Span.Slice(rawRecordStartPosition, rawRecordEndPosition - rawRecordStartPosition)));
+			//}
 
-			var charsUsed = stackFieldStartPosition;
+			var charsUsed = fieldStartPosition;
 			var bufferLeft = charsRead - charsUsed;
 			var bufferUsed = charsRead - bufferLeft;
 
 			// Create a new buffer with room for chars that haven't been read from the current buffer.
-			var tempBuffer = new char[bufferLeft + bufferSize];
+			var tempBuffer = new char[bufferLeft + configuration.BufferSize];
 
 			// Copy remaining old buffer to new buffer.
 			stackBuffer.Slice(charsUsed).CopyTo(tempBuffer);
 
 			// Read into the rest of the buffer.
-			charsRead = reader.Read(tempBuffer, bufferLeft, bufferSize);
+			charsRead = reader.Read(tempBuffer, bufferLeft, configuration.BufferSize);
 			if (charsRead == 0)
 			{
 				return false;
@@ -265,19 +263,18 @@ namespace CsvHelper
 			charsRead += bufferLeft;
 
 			heapBuffer = new Memory<char>(tempBuffer);
-			heapBufferPosition = heapBufferPosition - bufferUsed;
-			heapRawRecordStartPosition = heapRawRecordStartPosition - bufferUsed;
-			heapRawRecordEndPosition = stackFieldEndPosition - bufferUsed;
+			stackBuffer = heapBuffer.Span.Slice(0);
 
-			stackBufferPosition = stackBufferPosition - bufferUsed;
-			stackFieldStartPosition = stackFieldStartPosition - bufferUsed;
-			stackFieldEndPosition = stackFieldEndPosition - bufferUsed;
-			stackBuffer = heapBuffer.Span.Slice(stackFieldStartPosition);
+			bufferPosition = bufferPosition - bufferUsed;
+			fieldStartPosition = fieldStartPosition - bufferUsed;
+			fieldEndPosition = fieldEndPosition - bufferUsed;
+			//rawRecordStartPosition = Math.Max(rawRecordStartPosition - bufferUsed, 0);
+			//rawRecordEndPosition = rawRecordEndPosition - bufferUsed;
 
 			return true;
 		}
 
-		protected virtual string BuildRawRecord()
+		protected string BuildRawRecord()
 		{
 			var length = rawRecord.Sum(x => x.Length);
 			return string.Create(length, rawRecord, (span, rawRecord) =>
@@ -291,7 +288,7 @@ namespace CsvHelper
 			});
 		}
 
-		public virtual void Dispose()
+		public void Dispose()
 		{
 		}
 	}

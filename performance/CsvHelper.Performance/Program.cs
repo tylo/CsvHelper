@@ -22,21 +22,21 @@ namespace CsvHelper.Performance
 			//WriteField(50, 1_000_000);
 			//WriteRecords(1_000_000);
 
-			for (var i = 0; i < 1; i++)
+			for (var i = 0; i < 5; i++)
 			{
+				//Parse();
+				//LumenworksParse();
 				StackParse();
-				Parse();
-				LumenworksParse();
 				SoftCircuitsParse();
 
 				//ReadGetField();
 				//ReadGetRecords();
 				//ReadGetRecordsAsync().Wait();
 
-				//Console.WriteLine();
+				Console.WriteLine();
 			}
 
-			BenchmarkRunner.Run<Benchmarks>();
+			//BenchmarkRunner.Run<Benchmarks>();
 		}
 
 		static string GetFilePath()
@@ -86,6 +86,8 @@ namespace CsvHelper.Performance
 			using (var writer = new StreamWriter(stream))
 			using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
 			{
+				//csv.Configuration.ShouldQuote = (field, context) => true;
+
 				var records = new List<Columns50>();
 				for (var i = 0; i < rows; i++)
 				{
@@ -154,14 +156,15 @@ namespace CsvHelper.Performance
 
 		static void StackParse()
 		{
-			Console.WriteLine("CsvHelper stack parsing");
+			Console.WriteLine("CsvHelper span parsing");
 			var stopwatch = new Stopwatch();
 			stopwatch.Start();
 
 			using (var stream = File.OpenRead(GetFilePath()))
 			using (var reader = new StreamReader(stream))
-			using (var parser = new CsvStackParser(reader))
+			using (var parser = new CsvStackParser(reader, CultureInfo.InvariantCulture))
 			{
+				parser.Configuration.BufferSize = 1024 * 500;
 				ReadOnlySpan<string> row;
 				while ((row = parser.Read()) != null)
 				{
