@@ -184,7 +184,7 @@ namespace CsvHelper
 				fieldEndPosition--;
 			}
 
-			//AppendField(ref stackBuffer);
+			AppendField(ref stackBuffer);
 			fieldStartPosition = bufferPosition;
 			fieldEndPosition = fieldStartPosition;
 
