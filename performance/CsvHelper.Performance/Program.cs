@@ -22,12 +22,12 @@ namespace CsvHelper.Performance
 			//WriteField(50, 1_000_000);
 			//WriteRecords(1_000_000);
 
-			for (var i = 0; i < 5; i++)
+			for (var i = 0; i < 10; i++)
 			{
 				//Parse();
 				//LumenworksParse();
 				StackParse();
-				SoftCircuitsParse();
+				//SoftCircuitsParse();
 
 				//ReadGetField();
 				//ReadGetRecords();
