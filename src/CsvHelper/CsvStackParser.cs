@@ -26,10 +26,11 @@ namespace CsvHelper
 		private int newLineFirstChar = -2;
 		private bool leaveOpen;
 		private CsvConfiguration configuration;
-		private BufferPosition fieldPosition = new BufferPosition();
+		private BufferPosition currentFieldPosition;
+		private List<BufferPosition> currentFieldPositions;
 		//private BufferPosition rawFieldPosition = new BufferPosition();
 		private BufferPosition rawRecordPosition = new BufferPosition();
-		private List<BufferPosition> fieldPositions = new List<BufferPosition>(128);
+		private List<List<BufferPosition>> fieldPositions = new List<List<BufferPosition>>(128);
 		//private List<BufferPosition> rawFieldPositions = new List<BufferPosition>();
 
 		public CsvConfiguration Configuration => configuration;
@@ -40,7 +41,23 @@ namespace CsvHelper
 
 		public string RawRecord => new string(heapBuffer.Span.Slice(rawRecordPosition.Start, rawRecordPosition.Length));
 
-		public string this[int index] => GetField(index);
+		public string this[int index]
+		{
+			get
+			{
+				var positions = fieldPositions[index];
+				Span<char> fieldBuffer = stackalloc char[positions.Sum(p => p.Length)];
+				var start = 0;
+				for (var i = 0; i < positions.Count; i++)
+				{
+					heapBuffer.Span.Slice(positions[i].Start, positions[i].Length).CopyTo(fieldBuffer.Slice(start));
+					start += positions[i].Length;
+				}
+
+				return new string(fieldBuffer);
+				//return new string(heapBuffer.Span.Slice(positions.Start, positions.Length));
+			}
+		}
 
 		public CsvStackParser(TextReader reader, CultureInfo culture) : this(reader, culture, false) { }
 
@@ -53,12 +70,9 @@ namespace CsvHelper
 			this.reader = reader;
 			this.configuration = configuration;
 			this.leaveOpen = leaveOpen;
-		}
 
-		public string GetField(int index)
-		{
-			var position = fieldPositions[index];
-			return new string(heapBuffer.Span.Slice(position.Start, position.Length));
+			currentFieldPosition = new BufferPosition();
+			currentFieldPositions = new List<BufferPosition> { currentFieldPosition };
 		}
 
 		public bool Read()
@@ -122,7 +136,25 @@ namespace CsvHelper
 
 		protected bool ReadQuotedField(ref Span<char> stackBuffer)
 		{
-			throw new NotImplementedException();
+			while (true)
+			{
+				if (c == delimiterFirstChar)
+				{
+					if (ReadDelimiter(ref stackBuffer))
+					{
+						return false;
+					}
+				}
+				else if (c == newLineFirstChar || c == '\r' || c == '\n')
+				{
+					if (ReadLineEnding(ref stackBuffer))
+					{
+						return true;
+					}
+				}
+
+				c = GetChar(ref stackBuffer);
+			}
 		}
 
 		protected bool ReadDelimiter(ref Span<char> stackBuffer)
@@ -141,12 +173,11 @@ namespace CsvHelper
 				}
 			}
 
-			fieldPosition.Length -= delimiter.Length;
-			fieldPositions.Add(fieldPosition);
-			fieldPosition = new BufferPosition
-			{
-				Start = bufferPosition,
-			};
+			currentFieldPosition.Length -= delimiter.Length;
+
+			fieldPositions.Add(currentFieldPositions);
+			currentFieldPosition = new BufferPosition { Start = bufferPosition };
+			currentFieldPositions = new List<BufferPosition> { currentFieldPosition };
 
 			//rawFieldPosition.Length -= delimiter.Length;
 			//rawFieldPositions.Add(rawFieldPosition);
@@ -181,32 +212,30 @@ namespace CsvHelper
 					return true;
 				}
 
-				fieldPosition.Length -= newLine.Length;
+				currentFieldPosition.Length -= newLine.Length;
 				//rawFieldPosition.Length -= newLine.Length;
 			}
 			else if (c == '\r')
 			{
-				fieldPosition.Length--;
+				currentFieldPosition.Length--;
 				//rawFieldPosition.Length--;
 
-				if (PeekChar(stackBuffer) == '\n')
+				if (PeekChar(ref stackBuffer) == '\n')
 				{
 					c = GetChar(ref stackBuffer);
-					fieldPosition.Length--;
+					currentFieldPosition.Length--;
 					//rawFieldPosition.Length--;
 				}
 			}
 			else // \n
 			{
-				fieldPosition.Length--;
+				currentFieldPosition.Length--;
 				//rawFieldPosition.Length--;
 			}
 
-			fieldPositions.Add(fieldPosition);
-			fieldPosition = new BufferPosition
-			{
-				Start = bufferPosition,
-			};
+			fieldPositions.Add(currentFieldPositions);
+			currentFieldPosition = new BufferPosition { Start = bufferPosition };
+			currentFieldPositions = new List<BufferPosition> { currentFieldPosition };
 
 			//rawFieldPositions.Add(rawFieldPosition);
 			//rawFieldPosition = new BufferPosition
@@ -227,7 +256,7 @@ namespace CsvHelper
 
 			var c = stackBuffer[bufferPosition];
 			bufferPosition++;
-			fieldPosition.Length++;
+			currentFieldPosition.Length++;
 			//rawFieldPosition.Length++;
 			rawRecordPosition.Length++;
 
@@ -235,7 +264,7 @@ namespace CsvHelper
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected int PeekChar(Span<char> stackBuffer)
+		protected int PeekChar(ref Span<char> stackBuffer)
 		{
 			if (bufferPosition < charsRead)
 			{
@@ -272,7 +301,7 @@ namespace CsvHelper
 			stackBuffer = heapBuffer.Span.Slice(0);
 
 			bufferPosition = bufferPosition - bufferUsed;
-			fieldPosition.Start = fieldPosition.Start - bufferUsed;
+			currentFieldPosition.Start = currentFieldPosition.Start - bufferUsed;
 			//rawFieldPosition.Start = rawFieldPosition.Start - bufferUsed;
 			rawRecordPosition.Start = rawRecordPosition.Start - bufferUsed;
 

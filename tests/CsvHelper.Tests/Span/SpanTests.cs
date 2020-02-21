@@ -27,17 +27,17 @@ namespace CsvHelper.Tests.Span
 				Assert.IsTrue(parser.Read());
 				Assert.AreEqual("a", parser[0]);
 				Assert.AreEqual("b", parser[1]);
-				//Assert.AreEqual("a,b\r\n", parser.RawRecord);
+				Assert.AreEqual("a,b\r\n", parser.RawRecord);
 
 				Assert.IsTrue(parser.Read());
 				Assert.AreEqual("c", parser[0]);
 				Assert.AreEqual("d", parser[1]);
-				//Assert.AreEqual("c,d\r", parser.RawRecord);
+				Assert.AreEqual("c,d\r", parser.RawRecord);
 
 				Assert.IsTrue(parser.Read());
 				Assert.AreEqual("e", parser[0]);
 				Assert.AreEqual("f", parser[1]);
-				//Assert.AreEqual("e,f\n", parser.RawRecord);
+				Assert.AreEqual("e,f\n", parser.RawRecord);
 
 				Assert.IsFalse(parser.Read());
 			}

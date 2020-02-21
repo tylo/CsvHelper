@@ -164,7 +164,7 @@ namespace CsvHelper.Performance
 			using (var reader = new StreamReader(stream))
 			using (var parser = new CsvStackParser(reader, CultureInfo.InvariantCulture))
 			{
-				parser.Configuration.BufferSize = 2048;
+				parser.Configuration.BufferSize = 1024 * 100;
 				while (parser.Read())
 				{
 				}
