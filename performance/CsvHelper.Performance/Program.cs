@@ -25,9 +25,9 @@ namespace CsvHelper.Performance
 			for (var i = 0; i < 10; i++)
 			{
 				//Parse();
-				//LumenworksParse();
+				LumenworksParse();
 				StackParse();
-				//SoftCircuitsParse();
+				SoftCircuitsParse();
 
 				//ReadGetField();
 				//ReadGetRecords();
@@ -164,9 +164,8 @@ namespace CsvHelper.Performance
 			using (var reader = new StreamReader(stream))
 			using (var parser = new CsvStackParser(reader, CultureInfo.InvariantCulture))
 			{
-				parser.Configuration.BufferSize = 1024 * 500;
-				ReadOnlySpan<string> row;
-				while ((row = parser.Read()) != null)
+				parser.Configuration.BufferSize = 2048;
+				while (parser.Read())
 				{
 				}
 			}

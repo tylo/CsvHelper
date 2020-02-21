@@ -26,20 +26,19 @@ namespace CsvHelper.Tests.Span
 			{
 				parser.Configuration.BufferSize = 2048;
 
-				var row = parser.Read();
-				Assert.AreEqual("a", row[0]);
-				Assert.AreEqual("b", row[1]);
+				Assert.IsTrue(parser.Read());
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual("b", parser[1]);
 
-				row = parser.Read();
-				Assert.AreEqual("c", row[0]);
-				Assert.AreEqual("d", row[1]);
+				Assert.IsTrue(parser.Read());
+				Assert.AreEqual("c", parser[0]);
+				Assert.AreEqual("d", parser[1]);
 
-				row = parser.Read();
-				Assert.AreEqual("e", row[0]);
-				Assert.AreEqual("f", row[1]);
+				Assert.IsTrue(parser.Read());
+				Assert.AreEqual("e", parser[0]);
+				Assert.AreEqual("f", parser[1]);
 
-				row = parser.Read();
-				Assert.IsNull(row);
+				Assert.IsFalse(parser.Read());
 			}
 		}
     }
