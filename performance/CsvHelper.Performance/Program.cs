@@ -27,7 +27,8 @@ namespace CsvHelper.Performance
 				//Parse();
 				//LumenworksParse();
 				StackParse();
-				//SoftCircuitsParse();
+				//StefanBertelsStackParse();
+				SoftCircuitsParse();
 
 				//ReadGetField();
 				//ReadGetRecords();
@@ -166,7 +167,28 @@ namespace CsvHelper.Performance
 			{
 				parser.Configuration.BufferSize = 1024 * 500;
 				ReadOnlySpan<string> row;
-				while ((row = parser.Read()) != null)
+				while (parser.Read())
+				{
+					var column1 = parser[0];
+				}
+			}
+
+			stopwatch.Stop();
+			Console.WriteLine(stopwatch.Elapsed);
+		}
+
+		static void StefanBertelsStackParse()
+		{
+			Console.WriteLine("Stefan Bertels span parsing");
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
+
+			using (var stream = File.OpenRead(GetFilePath()))
+			using (var reader = new StreamReader(stream))
+			using (var parser = new CsvStefanBertelsParser(reader))
+			{
+				ReaderContext row;
+				while ((row = parser.Read()).FieldPositions != null)
 				{
 				}
 			}
@@ -299,6 +321,7 @@ namespace CsvHelper.Performance
 				string[] row = null;
 				while (csv.ReadRow(ref row))
 				{
+					var x = row[0];
 				}
 			}
 
