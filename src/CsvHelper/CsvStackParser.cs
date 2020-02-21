@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +21,9 @@ namespace CsvHelper
 		private int c = -1;
 		private char escape = '"';
 		private string delimiter = ",";
+		private int delimiterFirstChar = ',';
 		private string newLine = string.Empty;
+		private int newLineFirstChar = -2;
 		private bool leaveOpen;
 		private CsvConfiguration configuration;
 		private List<BufferPosition> fieldPositions = new List<BufferPosition>();
@@ -91,18 +94,19 @@ namespace CsvHelper
 			return true;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected bool ReadField(ref Span<char> stackBuffer)
 		{
 			while (true)
 			{
-				if (c == delimiter[0])
+				if (c == delimiterFirstChar)
 				{
 					if (ReadDelimiter(ref stackBuffer))
 					{
 						return false;
 					}
 				}
-				else if ((newLine.Length > 0 && c == newLine[0]) || c == '\r' || c == '\n')
+				else if (c == newLineFirstChar || c == '\r' || c == '\n')
 				{
 					if (ReadLineEnding(ref stackBuffer))
 					{
@@ -159,6 +163,7 @@ namespace CsvHelper
 
 				for (var i = 1; i < newLine.Length; i++)
 				{
+
 					c = GetChar(ref stackBuffer);
 					if (c != newLine[i])
 					{
@@ -196,6 +201,7 @@ namespace CsvHelper
 			return true;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected int GetChar(ref Span<char> stackBuffer)
 		{
 			if (!FillBuffer(ref stackBuffer))
@@ -211,6 +217,7 @@ namespace CsvHelper
 			return c;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected int PeekChar(Span<char> stackBuffer)
 		{
 			if (bufferPosition < charsRead)
@@ -221,6 +228,7 @@ namespace CsvHelper
 			return reader.Peek();
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected bool FillBuffer(ref Span<char> stackBuffer)
 		{
 			// The buffer doesn't need to be filled yet.
@@ -250,21 +258,6 @@ namespace CsvHelper
 
 			heapBuffer = new Memory<char>(tempBuffer);
 			stackBuffer = heapBuffer.Span.Slice(0);
-
-			/*
-			Span<char> tempBuffer = stackalloc char[bufferLeft + configuration.BufferSize];
-			stackBuffer.Slice(charsUsed).CopyTo(tempBuffer);
-			charsRead = reader.Read(tempBuffer.Slice(bufferLeft));
-			if (charsRead == 0)
-			{
-				return false;
-			}
-
-			charsRead += bufferLeft;
-
-			heapBuffer = new Memory<char>(tempBuffer.ToArray());
-			stackBuffer = heapBuffer.Span.Slice(0);
-			*/
 
 			bufferPosition = bufferPosition - bufferUsed;
 			fieldPosition.Start = fieldPosition.Start - bufferUsed;
