@@ -26,9 +26,11 @@ namespace CsvHelper
 		private int newLineFirstChar = -2;
 		private bool leaveOpen;
 		private CsvConfiguration configuration;
-		private List<BufferPosition> fieldPositions = new List<BufferPosition>();
 		private BufferPosition fieldPosition = new BufferPosition();
+		//private BufferPosition rawFieldPosition = new BufferPosition();
 		private BufferPosition rawRecordPosition = new BufferPosition();
+		private List<BufferPosition> fieldPositions = new List<BufferPosition>(128);
+		//private List<BufferPosition> rawFieldPositions = new List<BufferPosition>();
 
 		public CsvConfiguration Configuration => configuration;
 
@@ -139,13 +141,19 @@ namespace CsvHelper
 				}
 			}
 
-			// Adjust end position to account for delmiter.
 			fieldPosition.Length -= delimiter.Length;
 			fieldPositions.Add(fieldPosition);
 			fieldPosition = new BufferPosition
 			{
 				Start = bufferPosition,
 			};
+
+			//rawFieldPosition.Length -= delimiter.Length;
+			//rawFieldPositions.Add(rawFieldPosition);
+			//rawFieldPosition = new BufferPosition
+			//{
+			//	Start = bufferPosition,
+			//};
 
 			return true;
 		}
@@ -173,23 +181,25 @@ namespace CsvHelper
 					return true;
 				}
 
-				// Adjust position to account for new line.
 				fieldPosition.Length -= newLine.Length;
+				//rawFieldPosition.Length -= newLine.Length;
 			}
 			else if (c == '\r')
 			{
 				fieldPosition.Length--;
+				//rawFieldPosition.Length--;
 
 				if (PeekChar(stackBuffer) == '\n')
 				{
 					c = GetChar(ref stackBuffer);
 					fieldPosition.Length--;
+					//rawFieldPosition.Length--;
 				}
 			}
 			else // \n
 			{
-				// Adjust position to account for new line.
 				fieldPosition.Length--;
+				//rawFieldPosition.Length--;
 			}
 
 			fieldPositions.Add(fieldPosition);
@@ -197,6 +207,12 @@ namespace CsvHelper
 			{
 				Start = bufferPosition,
 			};
+
+			//rawFieldPositions.Add(rawFieldPosition);
+			//rawFieldPosition = new BufferPosition
+			//{
+			//	Start = bufferPosition,
+			//};
 
 			return true;
 		}
@@ -212,6 +228,7 @@ namespace CsvHelper
 			var c = stackBuffer[bufferPosition];
 			bufferPosition++;
 			fieldPosition.Length++;
+			//rawFieldPosition.Length++;
 			rawRecordPosition.Length++;
 
 			return c;
@@ -241,13 +258,8 @@ namespace CsvHelper
 			var bufferLeft = charsRead - charsUsed;
 			var bufferUsed = charsRead - bufferLeft;
 
-			// Create a new buffer with room for chars that haven't been read from the current buffer.
 			var tempBuffer = new char[bufferLeft + configuration.BufferSize];
-
-			// Copy remaining old buffer to new buffer.
 			stackBuffer.Slice(charsUsed).CopyTo(tempBuffer);
-
-			// Read into the rest of the buffer.
 			charsRead = reader.Read(tempBuffer, bufferLeft, configuration.BufferSize);
 			if (charsRead == 0)
 			{
@@ -261,6 +273,7 @@ namespace CsvHelper
 
 			bufferPosition = bufferPosition - bufferUsed;
 			fieldPosition.Start = fieldPosition.Start - bufferUsed;
+			//rawFieldPosition.Start = rawFieldPosition.Start - bufferUsed;
 			rawRecordPosition.Start = rawRecordPosition.Start - bufferUsed;
 
 			return true;
