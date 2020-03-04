@@ -25,6 +25,7 @@ namespace CsvHelper.Configuration
 		private CultureInfo cultureInfo = CultureInfo.CurrentCulture;
 		private readonly ClassMapCollection maps;
 		private NewLine newLine;
+		private int bufferSize = 2048;
 
 		/// <summary>
 		/// Gets or sets the <see cref="TypeConverterOptionsCache"/>.
@@ -181,6 +182,8 @@ namespace CsvHelper.Configuration
 				}
 
 				delimiter = value;
+
+				PropertyChangedEvents.OnChanged(value);
 			}
 		}
 
@@ -211,6 +214,8 @@ namespace CsvHelper.Configuration
 				escape = value;
 
 				doubleQuoteString = escape + quoteString;
+
+				PropertyChangedEvents.OnChanged(value);
 			}
 		}
 
@@ -247,6 +252,8 @@ namespace CsvHelper.Configuration
 
 				quoteString = Convert.ToString(value, cultureInfo);
 				doubleQuoteString = escape + quoteString;
+
+				PropertyChangedEvents.OnChanged(value);
 			}
 		}
 
@@ -290,7 +297,15 @@ namespace CsvHelper.Configuration
 		/// used for reading CSV files.
 		/// Default is 2048.
 		/// </summary>
-		public virtual int BufferSize { get; set; } = 2048;
+		public virtual int BufferSize
+		{
+			get { return bufferSize; }
+			set
+			{
+				bufferSize = value;
+				PropertyChangedEvents.OnChanged(value);
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the number of bytes should
@@ -401,6 +416,8 @@ namespace CsvHelper.Configuration
 		/// reference member's member.
 		/// </summary>
 		public virtual bool UseNewObjectForNullReferenceMembers { get; set; } = true;
+
+		public virtual PropertyChangedEvents<CsvConfiguration> PropertyChangedEvents { get; } = new PropertyChangedEvents<CsvConfiguration>();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CsvConfiguration"/> class

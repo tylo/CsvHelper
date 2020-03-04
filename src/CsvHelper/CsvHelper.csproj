@@ -60,6 +60,7 @@
 	<!-- .NET Standard 2.1 -->
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
 		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+		<PackageReference Include="System.IO.Pipelines" Version="4.7.0" />
 	</ItemGroup>
 
 	<ItemGroup>
