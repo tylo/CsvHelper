@@ -2,6 +2,7 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,16 +17,25 @@ namespace CsvHelper
 		private bool disposed = false;
 		private TextReader reader;
 		private CultureInfo cultureInfo;
-		private int bufferSize = 2;
+		private int bufferSize = -1;
 		private int memoryBufferPosition;
-		private int charsRead;
-		private List<char[]> fieldPositions = new List<char[]>(128);
-		private List<char[]> delimiterPositions = new List<char[]>(128);
+		private int charsRead = -1;
+		private List<int> fieldEndPositions = new List<int>(128);
 		private IMemoryOwner<char> memoryOwner;
 		private Memory<char> memoryBuffer;
 		private ReadOnlySequence<char> sequence;
 		private int rowStartPosition;
 		private int rowLength;
+		private char quote = '"';
+		private char escape = '"';
+		private string delimiter = ",";
+		private char delimiterFirstChar = ',';
+		private string newLine = string.Empty;
+		private char newLineFirstChar = '\0';
+
+		public int Row { get; protected set; }
+
+		public string RawRecord => new string(memoryBuffer.Slice(rowStartPosition, rowLength).Span);
 
 		public CsvMemoryPoolParser(TextReader reader, CultureInfo cultureInfo)
 		{
@@ -35,27 +45,22 @@ namespace CsvHelper
 
 		public bool Read()
 		{
+			Row++;
 			rowStartPosition = rowStartPosition + rowLength;
 			rowLength = 0;
-			fieldPositions.Clear();
-			delimiterPositions.Clear();
+			fieldEndPositions.Clear();
 
 			var sequenceReader = new SequenceReader<char>();
 
 			while (true)
 			{
-				if (sequenceReader.End)
+				if (!TryPeekChar(out var c, ref sequenceReader))
 				{
-					if (!FillBuffer(ref sequenceReader))
-					{
-						// EOF
-						return false;
-					}
+					// EOF
+					return false;
 				}
 
-				sequenceReader.TryPeek(out var c);
-
-				if (c == '"')
+				if (c == quote)
 				{
 					throw new NotImplementedException();
 				}
@@ -76,43 +81,49 @@ namespace CsvHelper
 		{
 			while (true)
 			{
-				if (sequenceReader.End && !FillBuffer(ref sequenceReader))
+				if (!TryGetChar(out var c, ref sequenceReader))
 				{
 					// EOF
 					return true;
 				}
 
-				sequenceReader.TryRead(out var c);
-				rowLength++;
+				if (c == delimiterFirstChar)
+				{
+					if (ReadDelimiter(c, ref sequenceReader))
+					{
+						return false;
+					}
 
-				if (c == ',')
-				{
-					return false;
+					// Not a delimiter. Keep going.
 				}
-				else if (c == '\r' || c == '\n')
+				else if (c == '\r' || c == '\n' || c == newLineFirstChar)
 				{
-					ReadLineEnding(c, ref sequenceReader);
-					return true;
+					if (ReadLineEnding(c, ref sequenceReader))
+					{
+						return true;
+					}
+
+					// Not a line ending. Keep going.
 				}
 			}
 		}
 
-		//[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected bool ReadLineEnding(char c, ref SequenceReader<char> sequenceReader)
+		public bool ReadQuotedField(ref SequenceReader<char> sequenceReader)
 		{
-			if (sequenceReader.End && !FillBuffer(ref sequenceReader))
-			{
-				// EOF.
-				return true;
-			}
+			throw new NotImplementedException();
+		}
 
-			if (c == '\r')
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected bool ReadDelimiter(char c, ref SequenceReader<char> sequenceReader)
+		{
+			if (delimiter.Length > 1)
 			{
-				sequenceReader.TryPeek(out var cPeek);
-				if (cPeek == '\n')
+				for (var i = 1; i < delimiter.Length; i++)
 				{
-					sequenceReader.Advance(1);
-					rowLength++;
+					if (!TryGetChar(out c, ref sequenceReader) || c != delimiter[i])
+					{
+						return false;
+					}
 				}
 			}
 
@@ -120,8 +131,114 @@ namespace CsvHelper
 		}
 
 		//[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected bool ReadLineEnding(char c, ref SequenceReader<char> sequenceReader)
+		{
+			if (newLine.Length > 0 && c == newLine[0])
+			{
+				if (newLine.Length == 1)
+				{
+					return true;
+				}
+
+				for (var i = 1; i < newLine.Length; i++)
+				{
+					if (!TryGetChar(out c, ref sequenceReader))
+					{
+						// EOF
+						return true;
+					}
+
+					if (c != newLine[i])
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
+			else if (c == '\r')
+			{
+				if (!TryPeekChar(out var cPeek, ref sequenceReader))
+				{
+					// EOF
+					return true;
+				}
+
+				if (cPeek == '\n')
+				{
+					sequenceReader.Advance(1);
+					rowLength++;
+				}
+			}
+			else
+			{
+				// \n
+			}
+
+			return true;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected bool TryGetChar(out char c, ref SequenceReader<char> sequenceReader)
+		{
+			if (sequenceReader.End && !FillSequence(ref sequenceReader))
+			{
+				// EOF
+				c = '\0';
+
+				return false;
+			}
+
+			sequenceReader.TryRead(out c);
+			rowLength++;
+
+			return true;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected bool TryPeekChar(out char c, ref SequenceReader<char> sequenceReader)
+		{
+			if (sequenceReader.End && !FillSequence(ref sequenceReader))
+			{
+				// EOF
+				c = '\0';
+
+				return false;
+			}
+
+			sequenceReader.TryPeek(out c);
+
+			return true;
+		}
+
+		//[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected bool FillSequence(ref SequenceReader<char> sequenceReader)
+		{
+			Debug.Assert(sequenceReader.End, "The SequenceReader must be empty to fill it.");
+
+			if (rowStartPosition + rowLength >= charsRead)
+			{
+				// We only need to fill the buffer if we've read everything from it.
+				if (!FillBuffer(ref sequenceReader))
+				{
+					return false;
+				}
+			}
+
+			var start = rowStartPosition + rowLength;
+			var length = charsRead - start;
+
+			sequence = new ReadOnlySequence<char>(memoryBuffer.Slice(rowStartPosition + rowLength, length));
+			sequenceReader = new SequenceReader<char>(sequence);
+
+			return true;
+		}
+
+		//[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		protected bool FillBuffer(ref SequenceReader<char> sequenceReader)
 		{
+			Debug.Assert(rowStartPosition + rowLength >= charsRead, "The buffer must be empty to fill it.");
+
 			if (memoryOwner == null)
 			{
 				memoryOwner = MemoryPool<char>.Shared.Rent(bufferSize);
@@ -135,10 +252,20 @@ namespace CsvHelper
 				{
 					bufferSize = memoryBuffer.Length * 2;
 				}
+
+				// Copy the remainder of the row onto the new buffer.
 				var tempMemoryOwner = MemoryPool<char>.Shared.Rent(bufferSize);
 				var tempMemoryBuffer = tempMemoryOwner.Memory;
 				memoryBuffer.Slice(rowStartPosition).CopyTo(tempMemoryBuffer);
-				charsRead = reader.Read(tempMemoryBuffer.Slice(memoryBuffer.Length - rowStartPosition).Span);
+				var start = memoryBuffer.Length - rowStartPosition;
+				charsRead = reader.Read(tempMemoryBuffer.Slice(start).Span);
+				if (charsRead == 0)
+				{
+					return false;
+				}
+
+				charsRead += start;
+
 				rowStartPosition = 0;
 
 				memoryBuffer = tempMemoryBuffer;
@@ -146,10 +273,7 @@ namespace CsvHelper
 				memoryOwner = tempMemoryOwner;
 			}
 
-			sequence = new ReadOnlySequence<char>(memoryBuffer.Slice(rowLength));
-			sequenceReader = new SequenceReader<char>(sequence);
-
-			return charsRead > 0;
+			return true;
 		}
 
 		public void Dispose()

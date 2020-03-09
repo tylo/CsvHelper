@@ -239,11 +239,10 @@ namespace CsvHelper
 					{
 						return false;
 					}
-
-					return true;
 				}
 
 				fieldLength -= newLine.Length;
+				return true;
 			}
 			else if (c == '\r')
 			{

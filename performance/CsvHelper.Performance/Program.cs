@@ -30,7 +30,7 @@ namespace CsvHelper.Performance
 				//StackParse();
 				SoftCircuitsParse();
 				MemoryPoolParse();
-				StefanBartelsParse();
+				//StefanBartelsParse();
 
 				//ReadGetField();
 				//ReadGetRecords();
@@ -169,6 +169,7 @@ namespace CsvHelper.Performance
 			{
 				while (parser.Read())
 				{
+					//Console.WriteLine($"{parser.Row.ToString("N0")}: {parser.RawRecord}");
 				}
 			}
 
