@@ -89,7 +89,7 @@ namespace CsvHelper
 
 				if (c == delimiterFirstChar)
 				{
-					if (ReadDelimiter(c, ref sequenceReader))
+					if (ReadDelimiter(ref sequenceReader))
 					{
 						return false;
 					}
@@ -114,13 +114,13 @@ namespace CsvHelper
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		protected bool ReadDelimiter(char c, ref SequenceReader<char> sequenceReader)
+		protected bool ReadDelimiter(ref SequenceReader<char> sequenceReader)
 		{
 			if (delimiter.Length > 1)
 			{
 				for (var i = 1; i < delimiter.Length; i++)
 				{
-					if (!TryGetChar(out c, ref sequenceReader) || c != delimiter[i])
+					if (!TryGetChar(out var c, ref sequenceReader) || c != delimiter[i])
 					{
 						return false;
 					}
