@@ -62,7 +62,10 @@ namespace CsvHelper
 
 				if (c == quote)
 				{
-					throw new NotImplementedException();
+					if (ReadQuotedField(ref sequenceReader))
+					{
+						break;
+					}
 				}
 				else
 				{
@@ -108,9 +111,64 @@ namespace CsvHelper
 			}
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public bool ReadQuotedField(ref SequenceReader<char> sequenceReader)
 		{
-			throw new NotImplementedException();
+			if (!TryGetChar(out var c, ref sequenceReader))
+			{
+				// EOF
+				return false;
+			}
+
+			var inQuotes = true;
+
+			while (true)
+			{
+				if (!TryGetChar(out c, ref sequenceReader))
+				{
+					// EOF
+					return false;
+				}
+
+				if (c == escape)
+				{
+					if (!TryPeekChar(out var cPeek, ref sequenceReader))
+					{
+						// EOF
+						return false;
+					}
+
+					if (cPeek == quote)
+					{
+						// Escaped quote was found. Keep going.
+						continue;
+					}
+				}
+
+				if (c == quote)
+				{
+					inQuotes = false;
+					continue;
+				}
+
+				if (!inQuotes)
+				{
+					if (c == delimiterFirstChar)
+					{
+						if (ReadDelimiter(ref sequenceReader))
+						{
+							return false;
+						}
+					}
+					else if (c == '\r' || c == '\n' || c == newLineFirstChar)
+					{
+						if (ReadLineEnding(c, ref sequenceReader))
+						{
+							return true;
+						}
+					}
+				}
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

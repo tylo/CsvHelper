@@ -20,7 +20,7 @@ namespace CsvHelper.Performance
 	{
 		static void Main(string[] args)
 		{
-			//WriteField(50, 1_000_000);
+			//WriteField(50, 1_000_000, true);
 			//WriteRecords(1_000_000);
 
 			for (var i = 0; i < 10; i++)
@@ -28,8 +28,8 @@ namespace CsvHelper.Performance
 				//Parse();
 				//LumenworksParse();
 				//StackParse();
-				SoftCircuitsParse();
-				MemoryPoolParse();
+				//SoftCircuitsParse();
+				MemoryPoolParse(false);
 				//StefanBartelsParse();
 
 				//ReadGetField();
@@ -49,7 +49,7 @@ namespace CsvHelper.Performance
 			return filePath;
 		}
 
-		static void WriteField(int columns = 50, int rows = 2_000_000)
+		static void WriteField(int columns = 50, int rows = 2_000_000, bool quoteAllFields = false)
 		{
 			Console.WriteLine("Writing using WriteField");
 			var stopwatch = new Stopwatch();
@@ -59,6 +59,11 @@ namespace CsvHelper.Performance
 			using (var writer = new StreamWriter(stream))
 			using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
 			{
+				if (quoteAllFields)
+				{
+					csv.Configuration.ShouldQuote = (field, context) => true;
+				}
+
 				for (var column = 1; column <= columns; column++)
 				{
 					csv.WriteField($"Column{column}");
@@ -157,7 +162,7 @@ namespace CsvHelper.Performance
 			Console.WriteLine(stopwatch.Elapsed);
 		}
 
-		static void MemoryPoolParse()
+		static void MemoryPoolParse(bool writeToConsole = false)
 		{
 			Console.WriteLine("CsvHelper memory pool parsing");
 			var stopwatch = new Stopwatch();
@@ -169,7 +174,10 @@ namespace CsvHelper.Performance
 			{
 				while (parser.Read())
 				{
-					//Console.WriteLine($"{parser.Row.ToString("N0")}: {parser.RawRecord}");
+					if (writeToConsole)
+					{
+						Console.WriteLine($"{parser.Row.ToString("N0")}: {parser.RawRecord}");
+					}
 				}
 			}
 
