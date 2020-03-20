@@ -8,7 +8,7 @@
 		
 		<!-- Build -->
 		<AssemblyName>CsvHelper</AssemblyName>
-		<TargetFrameworks>netstandard2.1;netstandard2.0;net45;net47</TargetFrameworks>
+		<TargetFramework>netstandard2.1</TargetFramework>
 		<RootNamespace>CsvHelper</RootNamespace>
 		<DefaultLanguage>en-US</DefaultLanguage>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -31,36 +31,19 @@
 		<RepositoryUrl>https://github.com/JoshClose/CsvHelper</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="CsvParserOld.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="CsvParserOld.tt" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="Icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<!-- .NET 4.5 -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+	<ItemGroup>
 		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.3" />
-		<PackageReference Include="System.ValueTuple" Version="4.4.0" />
-	</ItemGroup>
-
-	<!-- .NET 4.7 -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'net47'">
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.0" />
-		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.3" />
-	</ItemGroup>
-
-	<!-- .NET Standard 2.0 -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.0" />
-		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.3" />
-	</ItemGroup>
-
-	<!-- .NET Standard 2.1 -->
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-		<PackageReference Include="System.IO.Pipelines" Version="4.7.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -68,11 +51,6 @@
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>CsvFieldReader.tt</DependentUpon>
-		</Compile>
-		<Compile Update="CsvParser.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>CsvParser.tt</DependentUpon>
 		</Compile>
 		<Compile Update="T4Methods.cs">
 			<DesignTime>True</DesignTime>
@@ -85,10 +63,6 @@
 		<None Update="CsvFieldReader.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>CsvFieldReader.cs</LastGenOutput>
-		</None>
-		<None Update="CsvParser.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>CsvParser.cs</LastGenOutput>
 		</None>
 		<None Update="T4Methods.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>

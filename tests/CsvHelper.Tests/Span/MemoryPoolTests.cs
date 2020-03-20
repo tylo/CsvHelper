@@ -20,7 +20,7 @@ namespace CsvHelper.Tests.Span
 			s.Append("c,d\r");
 			s.Append("e,f\n");
 			using (var reader = new StringReader(s.ToString()))
-			using (var parser = new CsvMemoryPoolParser(reader, CultureInfo.InvariantCulture))
+			using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
 			{
 				Assert.IsTrue(parser.Read());
 				Assert.AreEqual("a,b\r\n", parser.RawRecord);
@@ -56,7 +56,7 @@ namespace CsvHelper.Tests.Span
 			var s = new StringBuilder();
 			s.Append("abcde,fghij,klmno,pqrst,uvwxy,z\r\n");
 			using (var reader = new StringReader(s.ToString()))
-			using (var parser = new CsvMemoryPoolParser(reader, CultureInfo.InvariantCulture))
+			using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
 			{
 				Assert.IsTrue(parser.Read());
 				Assert.IsFalse(parser.Read());

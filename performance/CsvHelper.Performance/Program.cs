@@ -170,32 +170,20 @@ namespace CsvHelper.Performance
 
 			using (var stream = File.OpenRead(GetFilePath()))
 			using (var reader = new StreamReader(stream))
-			using (var parser = new CsvMemoryPoolParser(reader, CultureInfo.InvariantCulture))
+			using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
 			{
 				while (parser.Read())
 				{
-					if (writeToConsole)
-					{
-						Console.WriteLine($"{parser.Row.ToString("N0")}: {parser.RawRecord}");
-					}
-				}
-			}
+					//for (var i = 0; i < parser.Length; i++)
+					//{
+					//	Console.WriteLine(parser[i]);
+					//}
+					//Console.WriteLine();
 
-			stopwatch.Stop();
-			Console.WriteLine(stopwatch.Elapsed);
-		}
-
-		static async Task PipeParseAsync()
-		{
-			Console.WriteLine("CsvHelper pipe parsing");
-			var stopwatch = new Stopwatch();
-			stopwatch.Start();
-
-			using (var stream = File.OpenRead(GetFilePath()))
-			using (var parser = new CsvPipeParser(stream))
-			{
-				while (await parser.ReadAsync())
-				{
+					//if (writeToConsole)
+					//{
+					//	Console.WriteLine($"{parser.Row.ToString("N0")}: {parser.RawRecord}");
+					//}
 				}
 			}
 

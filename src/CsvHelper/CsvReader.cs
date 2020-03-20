@@ -1241,7 +1241,6 @@ namespace CsvHelper
 			}
 		}
 
-#if NET47 || NETSTANDARD
 		/// <summary>
 		/// Gets all the records in the CSV file and
 		/// converts each to <see cref="System.Type"/> T. The Read method
@@ -1428,7 +1427,6 @@ namespace CsvHelper
 				yield return record;
 			}
 		}
-#endif // NET47 || NETSTANDARD
 
 		/// <summary>
 		/// Gets the index of the field at name if found.

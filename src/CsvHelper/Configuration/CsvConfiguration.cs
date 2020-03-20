@@ -24,8 +24,8 @@ namespace CsvHelper.Configuration
 		private string doubleQuoteString = "\"\"";
 		private CultureInfo cultureInfo = CultureInfo.CurrentCulture;
 		private readonly ClassMapCollection maps;
-		private NewLine newLine;
-		private int bufferSize = 2048;
+		private int bufferSize = -1;
+		private string newLine;
 
 		/// <summary>
 		/// Gets or sets the <see cref="TypeConverterOptionsCache"/>.
@@ -166,23 +166,9 @@ namespace CsvHelper.Configuration
 			get { return delimiter; }
 			set
 			{
-				if (value == "\n")
-				{
-					throw new ConfigurationException("Newline is not a valid delimiter.");
-				}
-
-				if (value == "\r")
-				{
-					throw new ConfigurationException("Carriage return is not a valid delimiter.");
-				}
-
-				if (value == Convert.ToString(quote))
-				{
-					throw new ConfigurationException("You can not use the quote as a delimiter.");
-				}
-
 				delimiter = value;
 
+				ValidateConfig();
 				PropertyChangedEvents.OnChanged(value);
 			}
 		}
@@ -196,25 +182,10 @@ namespace CsvHelper.Configuration
 			get { return escape; }
 			set
 			{
-				if (value == '\n')
-				{
-					throw new ConfigurationException("Newline is not a valid escape.");
-				}
-
-				if (value == '\r')
-				{
-					throw new ConfigurationException("Carriage return is not a valid escape.");
-				}
-
-				if (value.ToString() == delimiter)
-				{
-					throw new ConfigurationException("You can not use the delimiter as an escape.");
-				}
-
 				escape = value;
-
 				doubleQuoteString = escape + quoteString;
 
+				ValidateConfig();
 				PropertyChangedEvents.OnChanged(value);
 			}
 		}
@@ -228,31 +199,11 @@ namespace CsvHelper.Configuration
 			get { return quote; }
 			set
 			{
-				if (value == '\n')
-				{
-					throw new ConfigurationException("Newline is not a valid quote.");
-				}
-
-				if (value == '\r')
-				{
-					throw new ConfigurationException("Carriage return is not a valid quote.");
-				}
-
-				if (value == '\0')
-				{
-					throw new ConfigurationException("Null is not a valid quote.");
-				}
-
-				if (Convert.ToString(value) == delimiter)
-				{
-					throw new ConfigurationException("You can not use the delimiter as a quote.");
-				}
-
 				quote = value;
-
 				quoteString = Convert.ToString(value, cultureInfo);
 				doubleQuoteString = escape + quoteString;
 
+				ValidateConfig();
 				PropertyChangedEvents.OnChanged(value);
 			}
 		}
@@ -303,6 +254,7 @@ namespace CsvHelper.Configuration
 			set
 			{
 				bufferSize = value;
+
 				PropertyChangedEvents.OnChanged(value);
 			}
 		}
@@ -377,36 +329,17 @@ namespace CsvHelper.Configuration
 		/// <summary>
 		/// Gets or sets the newline to use when writing.
 		/// </summary>
-		public virtual NewLine NewLine
+		public virtual string NewLine
 		{
 			get => newLine;
 			set
 			{
 				newLine = value;
 
-				switch (value)
-				{
-					case NewLine.CR:
-						NewLineString = NewLines.CR;
-						break;
-					case NewLine.LF:
-						NewLineString = NewLines.LF;
-						break;
-					case NewLine.Environment:
-						NewLineString = Environment.NewLine;
-						break;
-					default:
-						NewLineString = NewLines.CRLF;
-						break;
-				}
+				ValidateConfig();
+				PropertyChangedEvents.OnChanged(value);
 			}
 		}
-
-		/// <summary>
-		/// Gets the newline string to use when writing. This string is determined
-		/// by the <see cref="NewLine"/> value.
-		/// </summary>
-		public virtual string NewLineString { get; protected set; }
 
 		/// <summary>
 		/// Gets or sets a value indicating that during writing if a new 
@@ -417,6 +350,9 @@ namespace CsvHelper.Configuration
 		/// </summary>
 		public virtual bool UseNewObjectForNullReferenceMembers { get; set; } = true;
 
+		/// <summary>
+		/// Notifications for configuration changes.
+		/// </summary>
 		public virtual PropertyChangedEvents<CsvConfiguration> PropertyChangedEvents { get; } = new PropertyChangedEvents<CsvConfiguration>();
 
 		/// <summary>
@@ -535,6 +471,32 @@ namespace CsvHelper.Configuration
 			maps.Add(map);
 
 			return map;
+		}
+
+		private void ValidateConfig()
+		{
+			if (quote == '\0') throw new ConfigurationException("The quote char cannot be the null char.");
+			if (escape == '\0') throw new ConfigurationException("The escape char cannot be the null char.");
+			if (string.IsNullOrWhiteSpace(delimiter)) throw new ConfigurationException("The delimiter cannot be null or empty.");
+			if (delimiter == escape.ToString()) throw new ConfigurationException("The delimiter and the escape char cannot be the same.");
+			if (delimiter == quote.ToString()) throw new ConfigurationException("The delimiter and the quote char cannot be the same.");
+			if (string.IsNullOrWhiteSpace(newLine))
+			{
+				if (delimiter == "\r") throw new ConfigurationException("The delimiter and new line cannot be the same.");
+				if (delimiter == "\n") throw new ConfigurationException("The delimiter and new line cannot be the same.");
+				if (delimiter == "\r\n") throw new ConfigurationException("The delimiter and new line cannot be the same.");
+				if (quote == '\r') throw new ConfigurationException("The quote char and new line cannot be the same.");
+				if (quote == '\n') throw new ConfigurationException("The quote char and new line cannot be the same.");
+				if (escape == '\r') throw new ConfigurationException("The escape char and new line cannot be the same.");
+				if (escape == '\n') throw new ConfigurationException("The escape char and new line cannot be the same.");
+			}
+			else
+			{
+				if (delimiter == newLine) throw new ConfigurationException("The delimiter and new line cannot be the same.");
+				if (escape.ToString() == newLine) throw new ConfigurationException("The escape char and new line cannot be the same.");
+				if (quote.ToString() == newLine) throw new ConfigurationException("The quote char and new line cannot be the same.");
+				if (doubleQuoteString == newLine) throw new ConfigurationException("The escape + quote char and new line cannot be the same.");
+			}
 		}
 	}
 }

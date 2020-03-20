@@ -11,10 +11,7 @@ namespace CsvHelper
 	/// <summary>
 	/// Defines methods used to serialize data into a CSV file.
 	/// </summary>
-	public interface ISerializer : IDisposable
-#if NET47 || NETSTANDARD
-		, IAsyncDisposable
-#endif
+	public interface ISerializer : IDisposable, IAsyncDisposable
 	{
 		/// <summary>
 		/// Gets the writing context.

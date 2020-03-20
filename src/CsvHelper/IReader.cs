@@ -81,7 +81,6 @@ namespace CsvHelper
 		/// <returns>An <see cref="IEnumerable{T}"/> of records.</returns>
 		IEnumerable<T> EnumerateRecords<T>(T record);
 
-#if NET47 || NETSTANDARD
 		/// <summary>
 		/// Gets all the records in the CSV file and
 		/// converts each to <see cref="Type"/> T. The Read method
@@ -121,6 +120,5 @@ namespace CsvHelper
 		/// <param name="record">The record to fill each enumeration.</param>
 		/// <returns>An <see cref="IAsyncEnumerable{T}"/> of records.</returns>
 		IAsyncEnumerable<T> EnumerateRecordsAsync<T>(T record);
-#endif // NET47 || NETSTANDARD
 	}
 }

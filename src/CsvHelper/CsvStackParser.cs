@@ -1,5 +1,4 @@
-﻿#if NETSTANDARD2_1
-using CsvHelper.Configuration;
+﻿using CsvHelper.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -365,4 +364,3 @@ namespace CsvHelper
 		}
 	}
 }
-#endif

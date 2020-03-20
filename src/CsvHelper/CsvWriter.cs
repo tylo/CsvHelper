@@ -720,7 +720,6 @@ namespace CsvHelper
 			disposed = true;
 		}
 
-#if NET47 || NETSTANDARD
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
@@ -753,6 +752,5 @@ namespace CsvHelper
 			context = null;
 			disposed = true;
 		}
-#endif
 	}
 }

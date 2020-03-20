@@ -14,10 +14,7 @@ namespace CsvHelper
 	/// <summary>
 	/// CSV writing state.
 	/// </summary>
-	public class WritingContext : IDisposable
-#if NET47 || NETSTANDARD
-		, IAsyncDisposable
-#endif
+	public class WritingContext : IDisposable, IAsyncDisposable
 	{
 		private bool disposed;
 		private TextWriter writer;
@@ -139,7 +136,6 @@ namespace CsvHelper
 			disposed = true;
 		}
 
-#if NET47 || NETSTANDARD
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
@@ -163,17 +159,11 @@ namespace CsvHelper
 
 			if (disposing && writer != null)
 			{
-#if NETSTANDARD2_1
 				await writer.DisposeAsync().ConfigureAwait(false);
-#else
-				await writer.FlushAsync().ConfigureAwait(false);
-				writer.Dispose();
-#endif
 			}
 
 			writer = null;
 			disposed = true;
 		}
-#endif
 	}
 }

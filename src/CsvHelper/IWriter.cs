@@ -13,10 +13,7 @@ namespace CsvHelper
 	/// <summary>
 	/// Defines methods used to write to a CSV file.
 	/// </summary>
-	public interface IWriter : IWriterRow, IDisposable
-#if NET47 || NETSTANDARD2_1
-		, IAsyncDisposable
-#endif
+	public interface IWriter : IWriterRow, IDisposable, IAsyncDisposable
 	{
 		/// <summary>
 		/// Serializes the row to the <see cref="TextWriter"/>.
