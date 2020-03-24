@@ -29,10 +29,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -52,10 +52,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -75,10 +75,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -98,10 +98,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -121,10 +121,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -144,10 +144,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -167,10 +167,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -190,10 +190,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -214,10 +214,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -237,10 +237,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -260,10 +260,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -283,10 +283,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -306,10 +306,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -329,10 +329,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -352,10 +352,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -375,10 +375,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -398,10 +398,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -421,10 +421,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -444,10 +444,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -467,10 +467,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -490,10 +490,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -513,10 +513,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -536,10 +536,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -559,10 +559,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -582,11 +582,11 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual("d e f", record[1]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual("d e f", parser[1]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -606,11 +606,11 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual("d e f", record[1]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual("d e f", parser[1]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -630,10 +630,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -653,10 +653,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -676,10 +676,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -699,10 +699,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -722,10 +722,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a ,b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a ,b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -746,10 +746,10 @@ namespace CsvHelper.Tests.Parsing
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
 				parser.Configuration.BufferSize = 1;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a ,b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a ,b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -770,10 +770,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -793,10 +793,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -839,10 +839,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -862,10 +862,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -885,10 +885,10 @@ namespace CsvHelper.Tests.Parsing
 				stream.Position = 0;
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -908,10 +908,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -931,10 +931,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -954,11 +954,11 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual("d e f", record[1]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual("d e f", parser[1]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -978,11 +978,11 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual("d e f", record[1]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual("d e f", parser[1]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -1002,11 +1002,11 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim | TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual("d e f", record[1]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual("d e f", parser[1]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -1026,11 +1026,11 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim | TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b c", record[0]);
-				Assert.AreEqual("d e f", record[1]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b c", parser[0]);
+				Assert.AreEqual("d e f", parser[1]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -1049,10 +1049,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("abc", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("abc", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -1071,10 +1071,10 @@ namespace CsvHelper.Tests.Parsing
 
 				parser.Configuration.TrimOptions = TrimOptions.Trim;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a b", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a b", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -1088,10 +1088,10 @@ namespace CsvHelper.Tests.Parsing
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
 
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a \"b\" c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a \"b\" c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -1104,10 +1104,10 @@ namespace CsvHelper.Tests.Parsing
 			{
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a \"b\" c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a \"b\" c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 
@@ -1120,10 +1120,10 @@ namespace CsvHelper.Tests.Parsing
 			{
 				parser.Configuration.TrimOptions = TrimOptions.InsideQuotes;
 				parser.Configuration.EnableRawRecord = true;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.AreEqual("a \"b\" c", record[0]);
-				Assert.AreEqual(line, parser.Context.RawRecord);
+				Assert.AreEqual("a \"b\" c", parser[0]);
+				Assert.AreEqual(line, parser.RawRecord);
 			}
 		}
 

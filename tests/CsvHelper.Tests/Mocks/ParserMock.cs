@@ -21,13 +21,17 @@ namespace CsvHelper.Tests.Mocks
 
 		public IParserConfiguration Configuration { get; }
 
-		public IFieldReader FieldReader
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
+		public int Count => throw new NotImplementedException();
+
+		public string[] Record => throw new NotImplementedException();
+
+		public string RawRecord => throw new NotImplementedException();
+
+		public int Row => throw new NotImplementedException();
+
+		public int RawRow => throw new NotImplementedException();
+
+		public string this[int index] => throw new NotImplementedException();
 
 		public ParserMock()
 		{
@@ -71,5 +75,8 @@ namespace CsvHelper.Tests.Mocks
 		public void Dispose()
 		{
 		}
+
+		bool IParser.Read() => throw new NotImplementedException();
+		Task<bool> IParser.ReadAsync() => throw new NotImplementedException();
 	}
 }

@@ -63,5 +63,7 @@ namespace CsvHelper
 		/// </summary>
 		/// <returns>True if there are more records to read, otherwise false.</returns>
 		Task<bool> ReadAsync();
+
+		ReadingContext Context { get; }
 	}
 }

@@ -211,25 +211,25 @@ namespace CsvHelper.Performance
 			Console.WriteLine(stopwatch.Elapsed);
 		}
 
-		static void Parse()
-		{
-			Console.WriteLine("CsvHelper parsing");
-			var stopwatch = new Stopwatch();
-			stopwatch.Start();
+		//static void Parse()
+		//{
+		//	Console.WriteLine("CsvHelper parsing");
+		//	var stopwatch = new Stopwatch();
+		//	stopwatch.Start();
 
-			using (var stream = File.OpenRead(GetFilePath()))
-			using (var reader = new StreamReader(stream))
-			using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
-			{
-				string[] row;
-				while ((row = parser.Read()) != null)
-				{
-				}
-			}
+		//	using (var stream = File.OpenRead(GetFilePath()))
+		//	using (var reader = new StreamReader(stream))
+		//	using (var parser = new CsvParser(reader, CultureInfo.InvariantCulture))
+		//	{
+		//		string[] row;
+		//		while ((row = parser.Read()) != null)
+		//		{
+		//		}
+		//	}
 
-			stopwatch.Stop();
-			Console.WriteLine(stopwatch.Elapsed);
-		}
+		//	stopwatch.Stop();
+		//	Console.WriteLine(stopwatch.Elapsed);
+		//}
 
 		static void ReadGetField()
 		{

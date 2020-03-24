@@ -207,7 +207,7 @@ namespace CsvHelper
 
 			do
 			{
-				context.Record = parser.Read();
+				context.Record = parser.Record;
 			}
 			while (context.Record != null && Configuration.ShouldSkipRecord(context.Record));
 
@@ -242,7 +242,8 @@ namespace CsvHelper
 		{
 			do
 			{
-				context.Record = await parser.ReadAsync().ConfigureAwait(false);
+				await parser.ReadAsync().ConfigureAwait(false);
+				context.Record = parser.Record;
 			}
 			while (context.Record != null && Configuration.ShouldSkipRecord(context.Record));
 

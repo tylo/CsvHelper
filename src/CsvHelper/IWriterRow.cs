@@ -32,7 +32,7 @@ namespace CsvHelper
 		/// written data, and the returned value should not be written.
 		/// </summary>
 		/// <param name="field">The converted field to write.</param>
-		void WriteConvertedField( string field );
+		void WriteConvertedField(string field);
 
 		/// <summary>
 		/// Writes the field to the CSV file. The field
@@ -42,7 +42,7 @@ namespace CsvHelper
 		/// to complete writing of the current record.
 		/// </summary>
 		/// <param name="field">The field to write.</param>
-		void WriteField( string field );
+		void WriteField(string field);
 
 		/// <summary>
 		/// Writes the field to the CSV file. This will
@@ -56,7 +56,7 @@ namespace CsvHelper
 		/// </summary>
 		/// <param name="field">The field to write.</param>
 		/// <param name="shouldQuote">True to quote the field, otherwise false.</param>
-		void WriteField( string field, bool shouldQuote );
+		void WriteField(string field, bool shouldQuote);
 
 		/// <summary>
 		/// Writes the field to the CSV file.
@@ -66,7 +66,7 @@ namespace CsvHelper
 		/// </summary>
 		/// <typeparam name="T">The type of the field.</typeparam>
 		/// <param name="field">The field to write.</param>
-		void WriteField<T>( T field );
+		void WriteField<T>(T field);
 
 		/// <summary>
 		/// Writes the field to the CSV file.
@@ -77,7 +77,7 @@ namespace CsvHelper
 		/// <typeparam name="T">The type of the field.</typeparam>
 		/// <param name="field">The field to write.</param>
 		/// <param name="converter">The converter used to convert the field into a string.</param>
-		void WriteField<T>( T field, ITypeConverter converter );
+		void WriteField<T>(T field, ITypeConverter converter);
 
 		/// <summary>
 		/// Writes the field to the CSV file
@@ -89,13 +89,13 @@ namespace CsvHelper
 		/// <typeparam name="T">The type of the field.</typeparam>
 		/// <typeparam name="TConverter">The type of the converter.</typeparam>
 		/// <param name="field">The field to write.</param>
-		void WriteField<T, TConverter>( T field );
+		void WriteField<T, TConverter>(T field);
 
 		/// <summary>
 		/// Writes a comment.
 		/// </summary>
 		/// <param name="comment">The comment to write.</param>
-		void WriteComment( string comment );
+		void WriteComment(string comment);
 
 		/// <summary>
 		/// Writes the header record from the given members.
@@ -107,13 +107,13 @@ namespace CsvHelper
 		/// Writes the header record from the given members.
 		/// </summary>
 		/// <param name="type">The type of the record.</param>
-		void WriteHeader( Type type );
+		void WriteHeader(Type type);
 
 		/// <summary>
 		/// Writes the record to the CSV file.
 		/// </summary>
 		/// <typeparam name="T">The type of the record.</typeparam>
 		/// <param name="record">The record to write.</param>
-		void WriteRecord<T>( T record );
+		void WriteRecord<T>(T record);
 	}
 }

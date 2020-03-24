@@ -31,7 +31,7 @@ namespace CsvHelper.Tests.Writing
 			{
 				var csv = new CsvWriter(serializer);
 				csv.Configuration.HasHeaderRecord = false;
-				csv.Configuration.NewLine = NewLine.CRLF;
+				csv.Configuration.NewLine = "\r\n";
 				csv.WriteRecords(records);
 
 				Assert.AreEqual("1,one\r\n", writer.ToString());
@@ -51,7 +51,7 @@ namespace CsvHelper.Tests.Writing
 			{
 				var csv = new CsvWriter(serializer);
 				csv.Configuration.HasHeaderRecord = false;
-				csv.Configuration.NewLine = NewLine.CR;
+				csv.Configuration.NewLine = "\r";
 				csv.WriteRecords(records);
 
 				Assert.AreEqual("1,one\r", writer.ToString());
@@ -71,7 +71,7 @@ namespace CsvHelper.Tests.Writing
 			{
 				var csv = new CsvWriter(serializer);
 				csv.Configuration.HasHeaderRecord = false;
-				csv.Configuration.NewLine = NewLine.LF;
+				csv.Configuration.NewLine = "\n";
 				csv.WriteRecords(records);
 
 				Assert.AreEqual("1,one\n", writer.ToString());
@@ -91,7 +91,7 @@ namespace CsvHelper.Tests.Writing
 			{
 				var csv = new CsvWriter(serializer);
 				csv.Configuration.HasHeaderRecord = false;
-				csv.Configuration.NewLine = NewLine.Environment;
+				csv.Configuration.NewLine = Environment.NewLine;
 				csv.WriteRecords(records);
 
 				Assert.AreEqual($"1,one{Environment.NewLine}", writer.ToString());

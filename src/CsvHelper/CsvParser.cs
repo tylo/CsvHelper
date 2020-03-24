@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace CsvHelper
 {
+	/// <summary>
+	/// Parses CSV text.
+	/// </summary>
 	public class CsvParser : IParser
 	{
 		private readonly bool leaveOpen;
@@ -32,6 +35,8 @@ namespace CsvHelper
 		private string newLine;
 		private char newLineFirstChar;
 		private FieldPositions fieldPositions = new FieldPositions();
+
+		public ReadingContext Context { get; protected set; }
 
 		/// <summary>
 		/// Gets the number of fields for the current row.
@@ -69,7 +74,20 @@ namespace CsvHelper
 		{
 			get
 			{
-				return new string(memoryBuffer.Slice(fieldPositions[index].Start, fieldPositions[index].Length).Span);
+				var position = fieldPositions[index];
+				var length = position.Parts.Sum(p => p.Length);
+
+				var field = string.Create(length, position, (Span<char> span, FieldPosition position) =>
+				{
+					var spanStart = 0;
+					foreach (var part in position.Parts)
+					{
+						memoryBuffer.Slice(part.Start, part.Length).Span.CopyTo(span.Slice(spanStart));
+						spanStart += part.Length;
+					}
+				});
+
+				return field;
 			}
 		}
 
@@ -94,6 +112,8 @@ namespace CsvHelper
 		/// <param name="leaveOpen">True to leave the reader open after the CsvReader object is disposed, otherwise false.</param>
 		public CsvParser(TextReader reader, CsvConfiguration configuration, bool leaveOpen = false)
 		{
+			Context = new ReadingContext(reader, configuration, leaveOpen);
+
 			this.reader = reader;
 			this.leaveOpen = leaveOpen;
 			this.configuration = configuration;
@@ -129,8 +149,9 @@ namespace CsvHelper
 			while (true)
 			{
 				fieldPositions.Add();
+				fieldPositions.Current.Add();
 
-				fieldPositions.Current.Start = sequenceReader.Position.GetInteger();
+				fieldPositions.Current.Current.Start = sequenceReader.Position.GetInteger();
 
 				if (!TryPeekChar(out var c, ref sequenceReader))
 				{
@@ -307,7 +328,7 @@ namespace CsvHelper
 				}
 			}
 
-			fieldPositions.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Start;
+			fieldPositions.Current.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Current.Start;
 
 			return true;
 		}
@@ -319,7 +340,7 @@ namespace CsvHelper
 			{
 				if (newLine.Length == 1)
 				{
-					fieldPositions.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Start;
+					fieldPositions.Current.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Current.Start;
 
 					return true;
 				}
@@ -328,7 +349,7 @@ namespace CsvHelper
 				{
 					if (!TryGetChar(out c, ref sequenceReader))
 					{
-						fieldPositions.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Start;
+						fieldPositions.Current.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Current.Start;
 
 						// EOF
 						return true;
@@ -340,7 +361,7 @@ namespace CsvHelper
 					}
 				}
 
-				fieldPositions.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Start;
+				fieldPositions.Current.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Current.Start;
 
 				return true;
 			}
@@ -349,7 +370,7 @@ namespace CsvHelper
 			{
 				if (!TryPeekChar(out var cPeek, ref sequenceReader))
 				{
-					fieldPositions.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Start;
+					fieldPositions.Current.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Current.Start;
 
 					// EOF
 					return true;
@@ -362,7 +383,7 @@ namespace CsvHelper
 				}
 			}
 
-			fieldPositions.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Start;
+			fieldPositions.Current.Current.Length = sequenceReader.Position.GetInteger() - fieldPositions.Current.Current.Start;
 
 			return true;
 		}

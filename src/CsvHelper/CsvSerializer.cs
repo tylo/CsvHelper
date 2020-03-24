@@ -115,7 +115,7 @@ namespace CsvHelper
 		{
 			// Don't forget about the async method below!
 
-			context.Writer.Write(context.SerializerConfiguration.NewLineString);
+			context.Writer.Write(context.SerializerConfiguration.NewLine ?? "\r\n");
 		}
 
 		/// <summary>
@@ -123,7 +123,7 @@ namespace CsvHelper
 		/// </summary>
 		public virtual async Task WriteLineAsync()
 		{
-			await context.Writer.WriteAsync(context.SerializerConfiguration.NewLineString).ConfigureAwait(false);
+			await context.Writer.WriteAsync(context.SerializerConfiguration.NewLine ?? "\r\n").ConfigureAwait(false);
 		}
 
 		/// <summary>

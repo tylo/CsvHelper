@@ -367,7 +367,6 @@ namespace CsvHelper.Configuration
 			maps = new ClassMapCollection(this);
 			this.cultureInfo = cultureInfo;
 			delimiter = cultureInfo.TextInfo.ListSeparator;
-			NewLine = cultureInfo == CultureInfo.InvariantCulture ? NewLine.CRLF : NewLine.Environment;
 		}
 
 		/// <summary>

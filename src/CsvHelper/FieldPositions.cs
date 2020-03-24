@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -10,7 +11,7 @@ namespace CsvHelper
 	/// <summary>
 	/// Keeps track of field positions.
 	/// </summary>
-	public class FieldPositions
+	public class FieldPositions : IEnumerable<FieldPosition>
 	{
 		private FieldPosition[] positions;
 
@@ -25,7 +26,7 @@ namespace CsvHelper
 		public FieldPosition Current => positions[Count - 1];
 
 		/// <summary>
-		/// Gets the <see cref="FieldPosition"/> at the specified index.
+		/// Gets the <see cref="FieldPositionPart"/> at the specified index.
 		/// </summary>
 		/// <param name="index">The index.</param>
 		/// <exception cref="IndexOutOfRangeException"></exception>
@@ -75,6 +76,28 @@ namespace CsvHelper
 		{
 			Count = 0;
 		}
+
+		/// <summary>
+		/// Returns an enumerator that iterates through the collection.
+		/// </summary>
+		/// <returns>
+		/// An enumerator that can be used to iterate through the collection.
+		/// </returns>
+		public IEnumerator<FieldPosition> GetEnumerator()
+		{
+			for (var i = 0; i < Count; i++)
+			{
+				yield return positions[i];
+			}
+		}
+
+		/// <summary>
+		/// Returns an enumerator that iterates through a collection.
+		/// </summary>
+		/// <returns>
+		/// An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+		/// </returns>
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		private void FillPositions()
 		{

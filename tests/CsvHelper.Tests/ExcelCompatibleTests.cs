@@ -24,13 +24,12 @@ namespace CsvHelper.Tests
 				writer.Flush();
 				stream.Position = 0;
 
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.IsNotNull(record);
-				Assert.AreEqual(3, record.Length);
-				Assert.AreEqual("one", record[0]);
-				Assert.AreEqual("two", record[1]);
-				Assert.AreEqual("three", record[2]);
+				Assert.AreEqual(3, parser.Count);
+				Assert.AreEqual("one", parser[0]);
+				Assert.AreEqual("two", parser[1]);
+				Assert.AreEqual("three", parser[2]);
 			}
 		}
 
@@ -48,13 +47,12 @@ namespace CsvHelper.Tests
 				writer.Flush();
 				stream.Position = 0;
 
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.IsNotNull(record);
-				Assert.AreEqual(3, record.Length);
-				Assert.AreEqual("one", record[0]);
-				Assert.AreEqual("two", record[1]);
-				Assert.AreEqual("three", record[2]);
+				Assert.AreEqual(3, parser.Count);
+				Assert.AreEqual("one", parser[0]);
+				Assert.AreEqual("two", parser[1]);
+				Assert.AreEqual("three", parser[2]);
 			}
 		}
 
@@ -72,13 +70,12 @@ namespace CsvHelper.Tests
 				writer.Flush();
 				stream.Position = 0;
 
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.IsNotNull(record);
-				Assert.AreEqual(3, record.Length);
-				Assert.AreEqual("one", record[0]);
-				Assert.AreEqual("two", record[1]);
-				Assert.AreEqual("three", record[2]);
+				Assert.AreEqual(3, parser.Count);
+				Assert.AreEqual("one", parser[0]);
+				Assert.AreEqual("two", parser[1]);
+				Assert.AreEqual("three", parser[2]);
 			}
 		}
 
@@ -96,13 +93,12 @@ namespace CsvHelper.Tests
 				writer.Flush();
 				stream.Position = 0;
 
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.IsNotNull(record);
-				Assert.AreEqual(3, record.Length);
-				Assert.AreEqual("one", record[0]);
-				Assert.AreEqual("two ", record[1]);
-				Assert.AreEqual("three", record[2]);
+				Assert.AreEqual(3, parser.Count);
+				Assert.AreEqual("one", parser[0]);
+				Assert.AreEqual("two ", parser[1]);
+				Assert.AreEqual("three", parser[2]);
 			}
 		}
 
@@ -121,13 +117,12 @@ namespace CsvHelper.Tests
 				stream.Position = 0;
 
 				parser.Configuration.BadDataFound = null;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.IsNotNull(record);
-				Assert.AreEqual(3, record.Length);
-				Assert.AreEqual("one", record[0]);
-				Assert.AreEqual(" \"two\"", record[1]);
-				Assert.AreEqual("three", record[2]);
+				Assert.AreEqual(3, parser.Count);
+				Assert.AreEqual("one", parser[0]);
+				Assert.AreEqual(" \"two\"", parser[1]);
+				Assert.AreEqual("three", parser[2]);
 			}
 		}
 
@@ -146,13 +141,12 @@ namespace CsvHelper.Tests
 				stream.Position = 0;
 
 				parser.Configuration.BadDataFound = null;
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.IsNotNull(record);
-				Assert.AreEqual(3, record.Length);
-				Assert.AreEqual("1", record[0]);
-				Assert.AreEqual("two \"2", record[1]);
-				Assert.AreEqual("3", record[2]);
+				Assert.AreEqual(3, parser.Count);
+				Assert.AreEqual("1", parser[0]);
+				Assert.AreEqual("two \"2", parser[1]);
+				Assert.AreEqual("3", parser[2]);
 
 				Assert.IsNull(parser.Read());
 			}
@@ -172,13 +166,12 @@ namespace CsvHelper.Tests
 				writer.Flush();
 				stream.Position = 0;
 
-				var record = parser.Read();
+				parser.Read();
 
-				Assert.IsNotNull(record);
-				Assert.AreEqual(3, record.Length);
-				Assert.AreEqual("1", record[0]);
-				Assert.AreEqual("two \" 2", record[1]);
-				Assert.AreEqual("3", record[2]);
+				Assert.AreEqual(3, parser.Count);
+				Assert.AreEqual("1", parser[0]);
+				Assert.AreEqual("two \" 2", parser[1]);
+				Assert.AreEqual("3", parser[2]);
 			}
 		}
 
@@ -196,11 +189,11 @@ namespace CsvHelper.Tests
 				writer.Flush();
 				stream.Position = 0;
 
-				var row = parser.Read();
-				Assert.IsNotNull(row);
-				Assert.AreEqual("a", row[0]);
-				Assert.AreEqual("b", row[1]);
-				Assert.AreEqual("c\r\nd,e,f\r\n", row[2]);
+				parser.Read();
+
+				Assert.AreEqual("a", parser[0]);
+				Assert.AreEqual("b", parser[1]);
+				Assert.AreEqual("c\r\nd,e,f\r\n", parser[2]);
 			}
 		}
 

@@ -32,9 +32,12 @@
 		<RepositoryType>git</RepositoryType>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Compile Remove="CsvFieldReader.cs" />
 	  <Compile Remove="CsvParserOld.cs" />
+	  <Compile Remove="IFieldReader.cs" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Remove="CsvFieldReader.tt" />
 	  <None Remove="CsvParserOld.tt" />
 	</ItemGroup>
 
@@ -47,11 +50,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="CsvFieldReader.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>CsvFieldReader.tt</DependentUpon>
-		</Compile>
 		<Compile Update="T4Methods.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -60,10 +58,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="CsvFieldReader.tt">
-			<Generator>TextTemplatingFileGenerator</Generator>
-			<LastGenOutput>CsvFieldReader.cs</LastGenOutput>
-		</None>
 		<None Update="T4Methods.tt">
 			<Generator>TextTemplatingFileGenerator</Generator>
 			<LastGenOutput>T4Methods.cs</LastGenOutput>
