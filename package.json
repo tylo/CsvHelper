@@ -1,0 +1,7 @@
+{
+  "name": "com.joshclose.csvhelper",
+  "displayName": "CsvHelper",
+  "description": "Library to help reading and writing CSV files. https://github.com/JoshClose/CsvHelper",
+  "version": "15.0.5",
+  "author": "JoshClose"
+}
